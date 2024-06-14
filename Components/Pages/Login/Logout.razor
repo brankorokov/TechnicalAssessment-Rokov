@@ -1,0 +1,21 @@
+﻿@page "/logout"
+@inject NavigationManager navManager;
+
+<h1>You've succcessfully logged out</h1>
+
+@code {
+    [CascadingParameter]
+    public HttpContext HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (HttpContext.User.Identity.IsAuthenticated)
+        {
+            await HttpContext.SignOutAsync();
+        }
+
+        await Task.Delay(TimeSpan.FromSeconds(2));
+        navManager.NavigateTo("/login");
+    }
+}
