@@ -1,17 +1,21 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using TechnicalAssessmentRokov.Components;
 using TechnicalAssessmentRokov.Data;
+using TechnicalAssessmentRokov.Models.Interfaces;
+using TechnicalAssessmentRokov.Models.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
-
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddBlazorBootstrap();
+builder.Services.AddHttpClient();
 builder.Services.AddRazorComponents();
 builder.Services.AddAuthentication((CookieAuthenticationDefaults.AuthenticationScheme))
     .AddCookie(options =>
@@ -21,9 +25,12 @@ builder.Services.AddAuthentication((CookieAuthenticationDefaults.AuthenticationS
         options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
         options.AccessDeniedPath = "/access-denied";
     });
+builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSingleton<IHomeService, HomeService>();
 builder.Services.AddCascadingAuthenticationState();
-
+builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -39,8 +46,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapControllers();
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseAuthentication();

@@ -1,6 +1,7 @@
 ﻿@page "/signup"
 @inject Data.DataContext dbContext
 @inject NavigationManager navManager;
+@inject IAuthService authService;
 
 <div class="container vh-100 d-flex align-items-center justify-content-center">
     <div class="col-4 bg-light h-50 p-4">
@@ -26,6 +27,7 @@
             <input type="submit" class="btn btn-primary w-100" value="Register" />
             <p class="text-danger mt-3 text-center">@errorMessage</p>
         </EditForm>
+        <p>Already have an account? <a href="/login">Log In</a></p>
     </div>
 </div>
 
@@ -38,10 +40,12 @@
     public SignUpViewModel Model { get; set; } = new();
 
     private string? errorMessage;
+    private bool success;
 
     private async Task RegisterUser()
     {
-        var existingAccounts = dbContext.UserAccounts.Where(x => x.UserName == Model.UserName).FirstOrDefault();
+        //Makes API call to check if any accounts already exist for this username. If null then its available.
+        var existingAccounts = await authService.GetUserAccountAsync(Model.UserName);
 
         if (existingAccounts != null)
         {
@@ -49,27 +53,41 @@
         }
         else
         {
-            dbContext.UserAccounts.Add(new UserAccount()
-                {
-                    UserName = Model.UserName,
-                    Password = Model.Password,
-                    Role = Model.Role
-                });
-
-            await dbContext.SaveChangesAsync();
-
-            var claims = new List<Claim>
+            try
             {
-                new Claim(ClaimTypes.Name, Model.UserName),
-                new Claim(ClaimTypes.Role, Model.Role)
-            };
+                //Makes call to API to add the new user
+                await authService.AddUserAsync(new UserAccount()
+                    {
+                        UserName = Model.UserName,
+                        Password = Model.Password,
+                        Role = Model.Role
+                    });
+                
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
+                //Create user identity
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, Model.UserName),
+                    new Claim(ClaimTypes.Role, Model.Role)
+                };
 
-            await HttpContext.SignInAsync(principal);
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
 
-            navManager.NavigateTo("/success");
+                await HttpContext.SignInAsync(principal);
+
+                navManager.NavigateTo("/");
+            }
+            //Navigation exception getting thrown when calling above. This is work around as I cant find any good answers. I think its a .NET 8 thing.
+            catch (NavigationException)
+            {
+                navManager.NavigateTo("/");
+            }
+            catch(Exception ex)
+            {
+                errorMessage = $"Failed to create user account : {ex.Message}";
+
+            }
         }
     }
 }

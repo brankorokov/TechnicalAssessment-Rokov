@@ -15,7 +15,6 @@
             await HttpContext.SignOutAsync();
         }
 
-        await Task.Delay(TimeSpan.FromSeconds(2));
         navManager.NavigateTo("/login");
     }
 }

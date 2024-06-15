@@ -2,16 +2,57 @@
 @using Microsoft.AspNetCore.Authorization
 @rendermode InteractiveServer
 @inject NavigationManager navManager
-@attribute [Authorize(Roles="CUSTOMER, LIBRARIAN")]
+@attribute [Authorize(Roles = "CUSTOMER, LIBRARIAN")]
+@inject IHomeService homeService
+@using BlazorBootstrap
 
-<PageTitle>Home</PageTitle>
+<div class="row">
+    <div class="col-12 p-5">
+        @if (bookList != null)
+        {
+            <Grid TItem="Book" class="table table-hover table-bordered table-striped" Data="bookList" AllowPaging="true" PageSize="10" Responsive="true" AllowSorting="true" AllowFiltering="true" FixedHeader="true" Height="700">
+                <GridColumn TItem="Book" HeaderText="" PropertyName="CoverPage" Filterable="false">
+                    <img src="@context.CoverPage" />
+                </GridColumn>
+                <GridColumn TItem="Book" HeaderText="Title" PropertyName="Title" SortKeySelector="book => book.Title" TextAlignment="Alignment.Center">
+                    @context.Title
+                </GridColumn>
+                <GridColumn TItem="Book" HeaderText="Author" PropertyName="Author" SortKeySelector="book => book.Author" TextAlignment="Alignment.Center">
+                    @context.Author
+                </GridColumn>
+                <GridColumn TItem="Book" HeaderText="Description" PropertyName="Description" TextAlignment="Alignment.Center" FilterTextboxWidth="300">
+                    @context.Description
+                </GridColumn>
+                <GridColumn TItem="Book" HeaderText="Publisher" PropertyName="Publisher" TextAlignment="Alignment.Center">
+                    @context.Publisher
+                </GridColumn>
+                <GridColumn TItem="Book" HeaderText="Date Published" PropertyName="DatePublished" TextAlignment="Alignment.Center">
+                    @context.PublicationDate
+                </GridColumn>
+                <GridColumn TItem="Book" HeaderText="Category" PropertyName="Category" TextAlignment="Alignment.Center">
+                    @context.Category
+                </GridColumn>
+                <GridColumn TItem="Book" HeaderText="Page Count" PropertyName="PageCount" TextAlignment="Alignment.Center">
+                    @context.PageCount
+                </GridColumn>
+                <GridColumn TItem="Book" HeaderText="ISBN" PropertyName="ISBN" TextAlignment="Alignment.Center">
+                    @context.ISBN
+                </GridColumn>
+            </Grid>
+        }
+    </div>
+</div>
 
-<h1>Hello, world!</h1>
+@code {
+    private List<Book>? bookList;
 
-Welcome to your new app.
+    protected override async Task OnInitializedAsync()
+    {
+        await GetBooks();
+    }
 
-@code{
-    [CascadingParameter]
-    public HttpContext HttpContext { get; set; }
-
+    private async Task GetBooks()
+    {
+        bookList = await homeService.GetBooks();
+    }
 }
