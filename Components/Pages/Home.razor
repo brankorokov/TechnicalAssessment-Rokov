@@ -2,49 +2,63 @@
 @using Microsoft.AspNetCore.Authorization
 @rendermode InteractiveServer
 @inject NavigationManager navManager
-@attribute [Authorize(Roles = "CUSTOMER, LIBRARIAN")]
 @inject IHomeService homeService
-@using BlazorBootstrap
+@inject IDialogService DialogService
+@attribute [Authorize]
+@layout Layout.MainLayout
 
-<div class="row">
-    <div class="col-12 p-5">
-        @if (bookList != null)
-        {
-            <Grid TItem="Book" class="table table-hover table-bordered table-striped" Data="bookList" AllowPaging="true" PageSize="10" Responsive="true" AllowSorting="true" AllowFiltering="true" FixedHeader="true" Height="700">
-                <GridColumn TItem="Book" HeaderText="" PropertyName="CoverPage" Filterable="false">
-                    <img src="@context.CoverPage" />
-                </GridColumn>
-                <GridColumn TItem="Book" HeaderText="Title" PropertyName="Title" SortKeySelector="book => book.Title" TextAlignment="Alignment.Center">
-                    @context.Title
-                </GridColumn>
-                <GridColumn TItem="Book" HeaderText="Author" PropertyName="Author" SortKeySelector="book => book.Author" TextAlignment="Alignment.Center">
-                    @context.Author
-                </GridColumn>
-                <GridColumn TItem="Book" HeaderText="Description" PropertyName="Description" TextAlignment="Alignment.Center" FilterTextboxWidth="300">
-                    @context.Description
-                </GridColumn>
-                <GridColumn TItem="Book" HeaderText="Publisher" PropertyName="Publisher" TextAlignment="Alignment.Center">
-                    @context.Publisher
-                </GridColumn>
-                <GridColumn TItem="Book" HeaderText="Date Published" PropertyName="DatePublished" TextAlignment="Alignment.Center">
-                    @context.PublicationDate
-                </GridColumn>
-                <GridColumn TItem="Book" HeaderText="Category" PropertyName="Category" TextAlignment="Alignment.Center">
-                    @context.Category
-                </GridColumn>
-                <GridColumn TItem="Book" HeaderText="Page Count" PropertyName="PageCount" TextAlignment="Alignment.Center">
-                    @context.PageCount
-                </GridColumn>
-                <GridColumn TItem="Book" HeaderText="ISBN" PropertyName="ISBN" TextAlignment="Alignment.Center">
-                    @context.ISBN
-                </GridColumn>
-            </Grid>
-        }
-    </div>
-</div>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <MudTable Items="@bookList" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Filter="new Func<Book,bool>(FilterBooks)" Bordered="true">
+        <ToolBarContent>
+            <MudSpacer />
+            <MudTextField @bind-Value="bookSearchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh></MudTh>
+            <MudTh>Title</MudTh>
+            <MudTh>Author</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Published</MudTh>
+            <MudTh Class="text-nowrap">Published Date</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh Class="text-nowrap">Page Count</MudTh>
+            <MudTh>ISBN</MudTh>
+            <MudTh Class="text-nowrap">Checked Out</MudTh>
+            <MudTh>Due By</MudTh>
+            <MudTh Class="text-nowrap">Checked Out By</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="CoverPage"><MudImage Src="@context.CoverPage" /></MudTd>
+            <MudTd DataLabel="Title">
+                <AuthorizeView>
+                    <Authorized Context="authContext">
+
+                        <MudLink OnClick="@(() => OpenBookModal(context))">@context.Title</MudLink>
+                    </Authorized>
+                    <NotAuthorized Context="authContext">
+                        <div>
+                            <!-- Not authorized content here -->
+                        </div>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </MudTd>
+            <MudTd DataLabel="Author" Class="text-nowrap">@context.Author</MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="Publisher">@context.Publisher</MudTd>
+            <MudTd DataLabel="PublicationDate">@Convert.ToDateTime(context.PublicationDate).ToString("MM/dd/yyyy")</MudTd>
+            <MudTd DataLabel="Category">@context.Category</MudTd>
+            <MudTd DataLabel="PageCount">@context.PageCount</MudTd>
+            <MudTd DataLabel="ISBN">@context.ISBN</MudTd>
+            <MudTd DataLabel="CheckedOutDate">@Convert.ToDateTime(context.CheckedOutDate).ToString("MM/dd/yyyy")</MudTd>
+            <MudTd DataLabel="DueDate">@Convert.ToDateTime(context.DueDate).ToString("MM/dd/yyyy")</MudTd>
+            <MudTd DataLabel="CheckedOutBy">@context.CheckedOutById</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudContainer>
 
 @code {
     private List<Book>? bookList;
+    private string bookSearchString = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,4 +69,30 @@
     {
         bookList = await homeService.GetBooks();
     }
+
+    private bool FilterBooks(Book book) => Filter(book, bookSearchString);
+
+    private bool Filter(Book book, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        if (book.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+    private async Task OpenBookModal(Book book)
+    {
+        var parameters = new DialogParameters<BookDialog> { { x => x._book, book } };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true, NoHeader = true};
+        var dialog = await DialogService.ShowAsync<BookDialog>(null, parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await GetBooks();
+        }
+    }   
 }

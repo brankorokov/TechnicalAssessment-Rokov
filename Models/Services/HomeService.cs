@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
+using System.Security.Claims;
+using System.Text;
 using TechnicalAssessmentRokov.Entities;
 using TechnicalAssessmentRokov.Models.Interfaces;
 
@@ -46,6 +50,42 @@ namespace TechnicalAssessmentRokov.Models.Services
             catch (Exception ex)
             {
                 throw new InvalidOperationException("Failed to retrieve books.", ex);
+            }
+        }
+
+        public async Task DeleteBook(int bookId)
+        {
+            string requestUri = $"{baseUri}/api/home/deletebook";
+
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
+
+                var userRoles = _contextAccessor.HttpContext.User.Claims
+                    .Where(c => c.Type == ClaimTypes.Role)
+                    .Select(c => c.Value)
+                    .ToList();
+
+                if (userRoles.Any())
+                {
+                    request.Headers.Add("X-User-Roles", string.Join(",", userRoles));
+                }
+
+                var requestBody = new { ID = bookId };
+                var json = JsonConvert.SerializeObject(requestBody);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                request.Content = content;
+
+                var response = await _httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to delete book.", ex);
             }
         }
     }

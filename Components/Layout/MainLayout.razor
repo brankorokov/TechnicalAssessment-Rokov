@@ -1,9 +1,32 @@
 ﻿@inherits LayoutComponentBase
-        <div class="page">
-            <main>
+@using MudBlazor
+@inject NavigationManager navManager
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudLayout>
+    <AuthorizeView>
+        <Authorized>
+            <MudAppBar Elevation="1">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                <MudText Typo="Typo.h5" Class="ml-3">Branko Rokov Public Library</MudText>
+                <MudSpacer />
+            </MudAppBar>
+            <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
                 <NavMenu />
-                <article class="content px-4">
-                        @Body
-                </article>
-            </main>
-        </div>
+            </MudDrawer>
+        </Authorized>
+    </AuthorizeView>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = false;
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

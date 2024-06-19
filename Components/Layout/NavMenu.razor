@@ -1,31 +1,16 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-dark ps-5">
-    <a class="navbar-brand text-light" href="#">Branko Rokov Public Library</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+@inject NavigationManager navManager
+<MudNavMenu>
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+            <MudNavLink Href="Account/Logout" Icon="@Icons.Material.Filled.Logout">Log Out</MudNavLink>
+        </Authorized>
+        <NotAuthorized>
+            <MudNavLink Href="Account/Login" Icon="@Icons.Material.Filled.Login">Log In</MudNavLink>
+            <MudNavLink Href="Account/Register" Icon="@Icons.Material.Filled.Add" >Sign Up</MudNavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+</MudNavMenu>
 
-    <div class="collapse navbar-collapse pe-5" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto">
-            <AuthorizeView>
-                <Authorized>
-                    <li class="nav-item active">
-                        <a class="nav-link text-light" href="/">Home</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link  text-light" href="/logout">Log Out</a>
-                    </li>
-                </Authorized>
-                <NotAuthorized>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="/login">Log In</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="/signup">Sign Up</a>
-                    </li>
-                </NotAuthorized>
-            </AuthorizeView>
-        </ul>
-    </div>
-</nav>
-
-
+@code {
+}

@@ -22,6 +22,165 @@ namespace TechnicalAssessmentRokov.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("TechnicalAssessmentRokov.Entities.Book", b =>
                 {
                     b.Property<int>("ID")
@@ -39,6 +198,14 @@ namespace TechnicalAssessmentRokov.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CATEGORY");
 
+                    b.Property<int?>("CheckedOutById")
+                        .HasColumnType("int")
+                        .HasColumnName("CHECKED_OUT_BY");
+
+                    b.Property<DateTime?>("CheckedOutDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CHECKED_OUT_DATE");
+
                     b.Property<string>("CoverPage")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("COVER_PAGE");
@@ -46,6 +213,10 @@ namespace TechnicalAssessmentRokov.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("DESCRIPTION");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DUE_DATE");
 
                     b.Property<int>("ISBN")
                         .HasColumnType("int")
@@ -76,1332 +247,1354 @@ namespace TechnicalAssessmentRokov.Migrations
                         new
                         {
                             ID = 1,
-                            Author = "Francesco Koch",
-                            Category = "sequi",
-                            CoverPage = "https://picsum.photos/50/50/?image=552",
-                            Description = "Dolores rem accusamus architecto hic molestiae ut ex et minus quis et et doloremque exercitationem sed rerum deserunt sequi suscipit.",
-                            ISBN = 805102479,
-                            PageCount = 711,
-                            PublicationDate = new DateTime(2024, 2, 15, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Willms, Cummings and Braun",
-                            Title = "withdrawal Creative Cambridgeshire"
+                            Author = "Carlo Watsica",
+                            Category = "eveniet",
+                            CoverPage = "https://picsum.photos/50/50/?image=286",
+                            Description = "Mollitia aspernatur rerum nihil vitae quo dicta ut illo molestiae nisi veritatis facilis qui in et fugiat qui autem tempora.",
+                            ISBN = 180715893,
+                            PageCount = 843,
+                            PublicationDate = new DateTime(2024, 6, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Koss Group",
+                            Title = "networks SCSI Tunisian Dinar"
                         },
                         new
                         {
                             ID = 2,
-                            Author = "Vincent Miller",
-                            Category = "laborum",
-                            CoverPage = "https://picsum.photos/50/50/?image=131",
-                            Description = "Eum aut omnis accusantium voluptates enim officia rerum omnis quo vel sit est nulla tempore odit et dignissimos vero aliquid.",
-                            ISBN = 272028493,
-                            PageCount = 347,
-                            PublicationDate = new DateTime(2024, 5, 30, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Kiehn and Sons",
-                            Title = "withdrawal Bulgarian Lev Music"
+                            Author = "Christina Gleichner",
+                            Category = "qui",
+                            CoverPage = "https://picsum.photos/50/50/?image=709",
+                            Description = "Sunt perferendis quos consequatur nisi hic in enim et quasi delectus vel sit assumenda explicabo nam necessitatibus reiciendis dolor incidunt.",
+                            ISBN = 154829113,
+                            PageCount = 276,
+                            PublicationDate = new DateTime(2023, 8, 13, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Okuneva - Stracke",
+                            Title = "Congo Prairie analyzer"
                         },
                         new
                         {
                             ID = 3,
-                            Author = "Tia Hyatt",
-                            Category = "aspernatur",
-                            CoverPage = "https://picsum.photos/50/50/?image=987",
-                            Description = "Modi officia quis libero aut nisi culpa est quia dolore autem consequatur dicta qui optio nostrum incidunt unde tempore illum.",
-                            ISBN = 228854494,
-                            PageCount = 417,
-                            PublicationDate = new DateTime(2024, 5, 5, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Funk - Mohr",
-                            Title = "adapter Parkways Tasty Steel Cheese"
+                            Author = "Dina Murazik",
+                            Category = "mollitia",
+                            CoverPage = "https://picsum.photos/50/50/?image=773",
+                            Description = "Quisquam ratione inventore omnis incidunt consequatur et amet nulla et ipsa animi nihil voluptatem aut voluptas vitae reprehenderit quaerat enim.",
+                            ISBN = 306360028,
+                            PageCount = 888,
+                            PublicationDate = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Cole, Rowe and Kiehn",
+                            Title = "Common Fundamental Viaduct"
                         },
                         new
                         {
                             ID = 4,
-                            Author = "Vernon Murray",
-                            Category = "ducimus",
-                            CoverPage = "https://picsum.photos/50/50/?image=23",
-                            Description = "Voluptate architecto sint modi earum saepe ratione iure est labore quia blanditiis voluptatem deserunt aperiam tempora velit aut dolorem in.",
-                            ISBN = 517404011,
-                            PageCount = 259,
-                            PublicationDate = new DateTime(2024, 3, 20, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Bauch, Schoen and Hand",
-                            Title = "well-modulated FTP JBOD"
+                            Author = "Elda Monahan",
+                            Category = "pariatur",
+                            CoverPage = "https://picsum.photos/50/50/?image=230",
+                            Description = "Dolorem natus qui ex ad illum labore nam illo et molestiae eos vel quo voluptatibus molestias saepe cum eos et.",
+                            ISBN = 552921309,
+                            PageCount = 279,
+                            PublicationDate = new DateTime(2024, 4, 17, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Funk, Bernhard and Quigley",
+                            Title = "Tasty Frozen Chips Singapore process improvement"
                         },
                         new
                         {
                             ID = 5,
-                            Author = "Murphy Dietrich",
-                            Category = "nemo",
-                            CoverPage = "https://picsum.photos/50/50/?image=486",
-                            Description = "Ut pariatur consequatur consequatur laborum dolorem omnis magni soluta doloribus facere quae totam omnis accusamus veritatis enim fuga laboriosam ea.",
-                            ISBN = 174974112,
-                            PageCount = 324,
-                            PublicationDate = new DateTime(2024, 3, 28, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Haag - Stiedemann",
-                            Title = "Bedfordshire Secured Checking Account"
+                            Author = "Adonis Wilderman",
+                            Category = "nesciunt",
+                            CoverPage = "https://picsum.photos/50/50/?image=7",
+                            Description = "Numquam quos aut architecto illo commodi harum enim quo voluptatem blanditiis optio officiis nisi rem laudantium ut quis sunt quia.",
+                            ISBN = 140801651,
+                            PageCount = 333,
+                            PublicationDate = new DateTime(2023, 12, 12, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Denesik Inc",
+                            Title = "HDD PNG Togo"
                         },
                         new
                         {
                             ID = 6,
-                            Author = "Tyrese Von",
-                            Category = "facere",
-                            CoverPage = "https://picsum.photos/50/50/?image=851",
-                            Description = "Quos eveniet reiciendis autem optio ex exercitationem aut deserunt et voluptatum vel enim rerum pariatur eos omnis a illo modi.",
-                            ISBN = 398541406,
-                            PageCount = 676,
-                            PublicationDate = new DateTime(2024, 4, 10, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Gislason Group",
-                            Title = "Fresh Haven out-of-the-box"
+                            Author = "Ashley Hamill",
+                            Category = "qui",
+                            CoverPage = "https://picsum.photos/50/50/?image=943",
+                            Description = "Quasi nobis id est nihil error cum temporibus voluptas aliquid doloribus officia nam magnam maiores praesentium aliquam quos repellat aut.",
+                            ISBN = 388276519,
+                            PageCount = 239,
+                            PublicationDate = new DateTime(2023, 7, 7, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Prosacco - Leannon",
+                            Title = "Creek Soft Ergonomic Wooden Mouse"
                         },
                         new
                         {
                             ID = 7,
-                            Author = "Hardy Altenwerth",
-                            Category = "sit",
-                            CoverPage = "https://picsum.photos/50/50/?image=1050",
-                            Description = "Blanditiis numquam sit ut nisi numquam molestiae debitis laudantium consequatur blanditiis modi corporis qui sit fugit deleniti rerum earum repellat.",
-                            ISBN = 828162371,
-                            PageCount = 638,
-                            PublicationDate = new DateTime(2023, 7, 20, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Miller LLC",
-                            Title = "Books, Kids & Computers card Manat"
+                            Author = "Grant Bartoletti",
+                            Category = "aliquam",
+                            CoverPage = "https://picsum.photos/50/50/?image=352",
+                            Description = "Fuga quam unde debitis quia doloribus aperiam non illum autem eaque magni eum nemo nihil perferendis consequatur ea aut sed.",
+                            ISBN = 722140004,
+                            PageCount = 530,
+                            PublicationDate = new DateTime(2023, 10, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "O'Hara - Pollich",
+                            Title = "Lempira matrix Trail"
                         },
                         new
                         {
                             ID = 8,
-                            Author = "Franz Mohr",
-                            Category = "doloribus",
-                            CoverPage = "https://picsum.photos/50/50/?image=667",
-                            Description = "Rerum consectetur quos rem reprehenderit nam sunt sunt quidem ut autem id quo rerum vero nesciunt dicta perferendis modi cumque.",
-                            ISBN = 580806137,
-                            PageCount = 204,
-                            PublicationDate = new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Emmerich, Douglas and Hand",
-                            Title = "fault-tolerant invoice Buckinghamshire"
+                            Author = "Brent Graham",
+                            Category = "aliquam",
+                            CoverPage = "https://picsum.photos/50/50/?image=52",
+                            Description = "Blanditiis doloremque deleniti a odit fuga nam repellendus dicta dolores harum minima et dolore voluptas nostrum quo est cum hic.",
+                            ISBN = 482024732,
+                            PageCount = 160,
+                            PublicationDate = new DateTime(2023, 10, 26, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Legros, Robel and Rolfson",
+                            Title = "reintermediate International Tasty Wooden Pants"
                         },
                         new
                         {
                             ID = 9,
-                            Author = "Don Ullrich",
-                            Category = "omnis",
-                            CoverPage = "https://picsum.photos/50/50/?image=752",
-                            Description = "Doloribus dolor ut sunt dolor laudantium sunt molestias similique ut adipisci odit facilis voluptas repudiandae consequatur dolorum dolorum sint placeat.",
-                            ISBN = 571209478,
-                            PageCount = 264,
-                            PublicationDate = new DateTime(2024, 5, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Williamson - Hegmann",
-                            Title = "visionary Kenyan Shilling EXE"
+                            Author = "Hailey Mraz",
+                            Category = "repudiandae",
+                            CoverPage = "https://picsum.photos/50/50/?image=371",
+                            Description = "Quae aliquam aliquam voluptatum et accusamus deleniti ab placeat a est eum quia consectetur dignissimos omnis dolore non labore et.",
+                            ISBN = 984850256,
+                            PageCount = 726,
+                            PublicationDate = new DateTime(2024, 6, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Weimann, Block and Larson",
+                            Title = "Practical Finland Garden & Sports"
                         },
                         new
                         {
                             ID = 10,
-                            Author = "Mayra Powlowski",
-                            Category = "sed",
-                            CoverPage = "https://picsum.photos/50/50/?image=417",
-                            Description = "Quisquam odio ducimus ducimus quis aspernatur architecto ipsum qui voluptatem eveniet et minima rem maiores a quisquam voluptatem aliquam accusantium.",
-                            ISBN = 233225757,
-                            PageCount = 750,
-                            PublicationDate = new DateTime(2023, 8, 16, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Rosenbaum, Douglas and Waters",
-                            Title = "Unbranded programming Uzbekistan Sum"
+                            Author = "Pink Buckridge",
+                            Category = "at",
+                            CoverPage = "https://picsum.photos/50/50/?image=867",
+                            Description = "Iste culpa ut itaque quo ut minima eaque minima quidem ullam voluptate reprehenderit magnam libero saepe perspiciatis impedit repudiandae suscipit.",
+                            ISBN = 107166849,
+                            PageCount = 566,
+                            PublicationDate = new DateTime(2024, 5, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Paucek LLC",
+                            Title = "Tasty Credit Card Account Berkshire"
                         },
                         new
                         {
                             ID = 11,
-                            Author = "Jennings Macejkovic",
-                            Category = "quae",
-                            CoverPage = "https://picsum.photos/50/50/?image=1012",
-                            Description = "Id velit sunt deleniti molestiae ab nam omnis explicabo iure molestias laudantium aut et aliquid sed laboriosam ducimus nihil incidunt.",
-                            ISBN = 916885146,
-                            PageCount = 509,
-                            PublicationDate = new DateTime(2024, 5, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "DuBuque - Harber",
-                            Title = "New York Money Market Account AI"
+                            Author = "Wyatt Parker",
+                            Category = "minus",
+                            CoverPage = "https://picsum.photos/50/50/?image=668",
+                            Description = "Facere et cupiditate assumenda animi id dolorem dignissimos et vel sunt quia sed saepe ab et consectetur adipisci ut rerum.",
+                            ISBN = 654919092,
+                            PageCount = 393,
+                            PublicationDate = new DateTime(2024, 1, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Mayer, Feeney and Murazik",
+                            Title = "withdrawal circuit Computers"
                         },
                         new
                         {
                             ID = 12,
-                            Author = "Larue Hilll",
-                            Category = "quaerat",
-                            CoverPage = "https://picsum.photos/50/50/?image=563",
-                            Description = "Delectus consectetur impedit voluptatibus minus voluptatem quo ut quas necessitatibus ut fugit qui nisi ipsa accusamus non dignissimos labore aut.",
-                            ISBN = 763839340,
-                            PageCount = 727,
-                            PublicationDate = new DateTime(2024, 6, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Schowalter Group",
-                            Title = "bricks-and-clicks e-enable Metal"
+                            Author = "Katharina Senger",
+                            Category = "quasi",
+                            CoverPage = "https://picsum.photos/50/50/?image=557",
+                            Description = "Quas minima est aperiam exercitationem dolor sit culpa debitis consequuntur reiciendis sint nobis natus et quaerat ab labore ut incidunt.",
+                            ISBN = 179595136,
+                            PageCount = 238,
+                            PublicationDate = new DateTime(2024, 1, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Beer, Grady and Erdman",
+                            Title = "killer Garden Buckinghamshire"
                         },
                         new
                         {
                             ID = 13,
-                            Author = "Khalid Funk",
-                            Category = "molestiae",
-                            CoverPage = "https://picsum.photos/50/50/?image=449",
-                            Description = "Facere temporibus rem optio qui praesentium et iure odio praesentium rem optio et et modi tenetur dicta qui est eius.",
-                            ISBN = 373267719,
-                            PageCount = 919,
-                            PublicationDate = new DateTime(2024, 6, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Ratke - Abernathy",
-                            Title = "Sri Lanka Rupee optimize input"
+                            Author = "Lessie Williamson",
+                            Category = "modi",
+                            CoverPage = "https://picsum.photos/50/50/?image=1049",
+                            Description = "Cumque eum blanditiis aut officiis voluptas sunt minima qui asperiores est saepe deserunt at molestiae et quae ad sint sed.",
+                            ISBN = 329843453,
+                            PageCount = 604,
+                            PublicationDate = new DateTime(2024, 5, 30, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Koch - Stanton",
+                            Title = "Response Dominican Peso Pa'anga"
                         },
                         new
                         {
                             ID = 14,
-                            Author = "Eriberto Ortiz",
-                            Category = "perferendis",
-                            CoverPage = "https://picsum.photos/50/50/?image=220",
-                            Description = "Eum voluptatem amet et a eaque at nobis sed vero et temporibus consequatur earum in molestias corrupti qui eos autem.",
-                            ISBN = 751333764,
-                            PageCount = 690,
-                            PublicationDate = new DateTime(2023, 11, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Reilly Inc",
-                            Title = "Avon Supervisor Isle"
+                            Author = "Retha Hagenes",
+                            Category = "corporis",
+                            CoverPage = "https://picsum.photos/50/50/?image=495",
+                            Description = "Consequatur aut doloribus veniam similique esse commodi aut maxime quia suscipit totam quos et illo aut eveniet est velit maxime.",
+                            ISBN = 652040350,
+                            PageCount = 499,
+                            PublicationDate = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Bradtke Inc",
+                            Title = "Architect Springs PCI"
                         },
                         new
                         {
                             ID = 15,
-                            Author = "Bernard Strosin",
-                            Category = "a",
-                            CoverPage = "https://picsum.photos/50/50/?image=66",
-                            Description = "Magni accusamus sequi quia nemo dolorem aut quia ad reiciendis velit nobis quis corrupti illum et nihil vero similique asperiores.",
-                            ISBN = 579259910,
-                            PageCount = 796,
-                            PublicationDate = new DateTime(2024, 3, 19, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Bergstrom - Crist",
-                            Title = "Japan reciprocal collaboration"
+                            Author = "Maxie Schiller",
+                            Category = "ea",
+                            CoverPage = "https://picsum.photos/50/50/?image=658",
+                            Description = "Voluptate nesciunt quia ex molestiae eaque est odio sequi eos et aut cumque officiis unde omnis non voluptas voluptas totam.",
+                            ISBN = 618970512,
+                            PageCount = 133,
+                            PublicationDate = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Zboncak LLC",
+                            Title = "Quetzal Buckinghamshire Practical Cotton Bacon"
                         },
                         new
                         {
                             ID = 16,
-                            Author = "Suzanne Graham",
-                            Category = "beatae",
-                            CoverPage = "https://picsum.photos/50/50/?image=8",
-                            Description = "Veritatis quod earum qui eos recusandae perspiciatis non qui ut et id est velit sunt consequuntur incidunt deleniti molestiae et.",
-                            ISBN = 971447249,
-                            PageCount = 63,
-                            PublicationDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Rath, Ledner and Friesen",
-                            Title = "Practical Metal Chips Intranet port"
+                            Author = "Dillon Dicki",
+                            Category = "est",
+                            CoverPage = "https://picsum.photos/50/50/?image=1031",
+                            Description = "Nihil provident consequuntur voluptatum aut doloremque veniam nihil placeat voluptatem et molestias vel dolorem magni corrupti beatae in nisi quod.",
+                            ISBN = 614354956,
+                            PageCount = 96,
+                            PublicationDate = new DateTime(2023, 12, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Batz Inc",
+                            Title = "JBOD index bus"
                         },
                         new
                         {
                             ID = 17,
-                            Author = "Rebecca Padberg",
-                            Category = "placeat",
-                            CoverPage = "https://picsum.photos/50/50/?image=511",
-                            Description = "Reiciendis porro sunt id ab dignissimos architecto est excepturi voluptas facilis debitis non laborum sint et quia et quidem ut.",
-                            ISBN = 613795195,
-                            PageCount = 384,
-                            PublicationDate = new DateTime(2023, 11, 27, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Schoen and Sons",
-                            Title = "HDD Holy See (Vatican City State) Sports"
+                            Author = "Kip McGlynn",
+                            Category = "itaque",
+                            CoverPage = "https://picsum.photos/50/50/?image=449",
+                            Description = "Consequatur laudantium non optio quas qui assumenda quia tempore neque aut aut architecto et rem sunt asperiores aut possimus amet.",
+                            ISBN = 136593960,
+                            PageCount = 774,
+                            PublicationDate = new DateTime(2023, 10, 9, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Windler LLC",
+                            Title = "Handcrafted compressing Credit Card Account"
                         },
                         new
                         {
                             ID = 18,
-                            Author = "Marcellus Kuhn",
-                            Category = "odio",
-                            CoverPage = "https://picsum.photos/50/50/?image=224",
-                            Description = "Nobis quia dolorem dolores molestiae veritatis ut accusamus dolores quasi numquam laboriosam distinctio alias quaerat consequuntur sunt sint dolorum debitis.",
-                            ISBN = 293206881,
-                            PageCount = 690,
-                            PublicationDate = new DateTime(2024, 3, 29, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Greenfelder - Runte",
-                            Title = "Multi-lateral Future Ford"
+                            Author = "Ramiro Turner",
+                            Category = "magni",
+                            CoverPage = "https://picsum.photos/50/50/?image=946",
+                            Description = "Velit harum voluptas eveniet et ipsa omnis nulla et et atque eveniet atque autem quo voluptatum sed nihil ratione at.",
+                            ISBN = 580331529,
+                            PageCount = 518,
+                            PublicationDate = new DateTime(2023, 12, 27, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Runolfsson, Conn and Schroeder",
+                            Title = "XSS input Moroccan Dirham"
                         },
                         new
                         {
                             ID = 19,
-                            Author = "Damaris Tromp",
-                            Category = "a",
-                            CoverPage = "https://picsum.photos/50/50/?image=515",
-                            Description = "Voluptate vel nam et ea explicabo rerum et qui voluptatem aut aut nemo quaerat facilis necessitatibus aspernatur nihil magnam inventore.",
-                            ISBN = 797974447,
-                            PageCount = 926,
-                            PublicationDate = new DateTime(2024, 4, 10, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Feeney, Hintz and Botsford",
-                            Title = "Brand Data withdrawal"
+                            Author = "Jimmy Pagac",
+                            Category = "officiis",
+                            CoverPage = "https://picsum.photos/50/50/?image=287",
+                            Description = "Quas necessitatibus atque et omnis voluptas quisquam autem nam dicta ut et dicta expedita velit quos consectetur temporibus possimus reprehenderit.",
+                            ISBN = 702502851,
+                            PageCount = 530,
+                            PublicationDate = new DateTime(2023, 8, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Daugherty, Konopelski and Jones",
+                            Title = "Plastic Tasty Lithuanian Litas"
                         },
                         new
                         {
                             ID = 20,
-                            Author = "Vidal Kunze",
-                            Category = "eos",
-                            CoverPage = "https://picsum.photos/50/50/?image=1043",
-                            Description = "Ipsum nihil debitis quod alias et occaecati dignissimos non numquam blanditiis doloremque molestias numquam repellat rem expedita omnis voluptas maxime.",
-                            ISBN = 177619022,
-                            PageCount = 236,
-                            PublicationDate = new DateTime(2023, 12, 13, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Kling - Spinka",
-                            Title = "integrated Practical Concrete Table compress"
+                            Author = "Leola Wolff",
+                            Category = "doloremque",
+                            CoverPage = "https://picsum.photos/50/50/?image=927",
+                            Description = "Nihil explicabo qui modi ut nulla quia eius et sed voluptatum occaecati fugit ipsa qui ut aspernatur est commodi voluptatem.",
+                            ISBN = 394397332,
+                            PageCount = 737,
+                            PublicationDate = new DateTime(2024, 2, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Daniel LLC",
+                            Title = "Djibouti Franc Refined Granite Tuna parse"
                         },
                         new
                         {
                             ID = 21,
-                            Author = "Gerson Bartoletti",
-                            Category = "corrupti",
-                            CoverPage = "https://picsum.photos/50/50/?image=548",
-                            Description = "Id officiis laudantium excepturi quibusdam sequi sit pariatur fugiat aut sequi soluta aut sed quo quia labore ad suscipit nihil.",
-                            ISBN = 751745803,
-                            PageCount = 348,
-                            PublicationDate = new DateTime(2024, 1, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Lueilwitz LLC",
-                            Title = "Investor transmit next-generation"
+                            Author = "Emery O'Kon",
+                            Category = "impedit",
+                            CoverPage = "https://picsum.photos/50/50/?image=3",
+                            Description = "Assumenda vitae expedita quo omnis architecto ullam dolorum a quasi quos commodi quod est molestiae eius vitae in est impedit.",
+                            ISBN = 298741037,
+                            PageCount = 467,
+                            PublicationDate = new DateTime(2023, 8, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Carter - Ernser",
+                            Title = "Michigan Manor Web"
                         },
                         new
                         {
                             ID = 22,
-                            Author = "Tyree Rowe",
-                            Category = "aut",
-                            CoverPage = "https://picsum.photos/50/50/?image=810",
-                            Description = "Eligendi suscipit laudantium placeat ipsa hic natus autem maiores exercitationem deleniti et vel error qui dolorum est voluptatem est ea.",
-                            ISBN = 455574855,
-                            PageCount = 410,
-                            PublicationDate = new DateTime(2023, 10, 15, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Koelpin, Littel and MacGyver",
-                            Title = "Afghani reboot incremental"
+                            Author = "Shirley Johnson",
+                            Category = "consequatur",
+                            CoverPage = "https://picsum.photos/50/50/?image=416",
+                            Description = "Ut neque nobis similique doloremque debitis dolore qui ex consequatur consectetur deleniti illo quasi et nulla id incidunt aut voluptatem.",
+                            ISBN = 814671338,
+                            PageCount = 405,
+                            PublicationDate = new DateTime(2023, 8, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Kutch - Daniel",
+                            Title = "Indiana Future Rustic Frozen Ball"
                         },
                         new
                         {
                             ID = 23,
-                            Author = "Stephany Schiller",
-                            Category = "sequi",
-                            CoverPage = "https://picsum.photos/50/50/?image=29",
-                            Description = "Corrupti iste sed est unde in omnis quas enim suscipit magni ut ut et eveniet earum non aspernatur officiis hic.",
-                            ISBN = 838033749,
-                            PageCount = 850,
-                            PublicationDate = new DateTime(2023, 8, 20, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Hoppe - Rau",
-                            Title = "transmitter architectures RSS"
+                            Author = "Gerda O'Kon",
+                            Category = "occaecati",
+                            CoverPage = "https://picsum.photos/50/50/?image=1045",
+                            Description = "Necessitatibus quo eaque nam voluptatum aut in odio rerum placeat dolorum adipisci quis aut ullam ut quam totam velit qui.",
+                            ISBN = 551382814,
+                            PageCount = 652,
+                            PublicationDate = new DateTime(2023, 7, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Volkman, O'Kon and Brekke",
+                            Title = "International tan stable"
                         },
                         new
                         {
                             ID = 24,
-                            Author = "Esmeralda Pollich",
-                            Category = "similique",
-                            CoverPage = "https://picsum.photos/50/50/?image=91",
-                            Description = "Quia cumque enim earum quisquam nihil molestiae labore perferendis ut ratione maiores ut molestiae totam odit enim odio rerum exercitationem.",
-                            ISBN = 405085464,
-                            PageCount = 938,
-                            PublicationDate = new DateTime(2023, 11, 30, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "McKenzie, Will and Wisoky",
-                            Title = "Netherlands Antilles generating Lead"
+                            Author = "Gregory Friesen",
+                            Category = "quia",
+                            CoverPage = "https://picsum.photos/50/50/?image=213",
+                            Description = "Et itaque aut pariatur perspiciatis molestias saepe quos ut provident et dolorem nobis laborum recusandae consequatur at aspernatur nihil accusantium.",
+                            ISBN = 302048470,
+                            PageCount = 486,
+                            PublicationDate = new DateTime(2023, 8, 18, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Wolf and Sons",
+                            Title = "Metal Compatible Throughway"
                         },
                         new
                         {
                             ID = 25,
-                            Author = "Gabriella Corwin",
-                            Category = "repellendus",
-                            CoverPage = "https://picsum.photos/50/50/?image=454",
-                            Description = "Maiores ut nihil est cum incidunt dolores nemo tempora natus et pariatur nemo repellendus harum dicta temporibus recusandae qui perspiciatis.",
-                            ISBN = 452647274,
-                            PageCount = 509,
-                            PublicationDate = new DateTime(2024, 2, 3, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Doyle - Fritsch",
-                            Title = "Bedfordshire Analyst auxiliary"
+                            Author = "Freddy Hegmann",
+                            Category = "esse",
+                            CoverPage = "https://picsum.photos/50/50/?image=1004",
+                            Description = "Alias expedita similique non laboriosam deleniti quia explicabo velit molestiae quidem odit sed sed recusandae maxime numquam consequatur et a.",
+                            ISBN = 765235469,
+                            PageCount = 438,
+                            PublicationDate = new DateTime(2024, 5, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Gislason, Lubowitz and Smitham",
+                            Title = "Alley niches Mauritania"
                         },
                         new
                         {
                             ID = 26,
-                            Author = "Ora Gulgowski",
-                            Category = "aliquam",
-                            CoverPage = "https://picsum.photos/50/50/?image=261",
-                            Description = "Aut aut id doloremque eos consequatur vero quo magnam placeat illo voluptate laboriosam minima ex unde magnam itaque voluptatum ipsam.",
-                            ISBN = 673692148,
-                            PageCount = 782,
-                            PublicationDate = new DateTime(2023, 6, 21, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Roberts, Grady and Hane",
-                            Title = "generate Unbranded Soft Pants microchip"
+                            Author = "Freddy Conroy",
+                            Category = "facilis",
+                            CoverPage = "https://picsum.photos/50/50/?image=348",
+                            Description = "Aliquam voluptas ut ratione deserunt qui repellendus qui voluptas et eos eligendi blanditiis et et nihil non dolorem et atque.",
+                            ISBN = 682773931,
+                            PageCount = 643,
+                            PublicationDate = new DateTime(2023, 7, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Kessler Group",
+                            Title = "Refined Steel Car Handmade Rubber Computer IB"
                         },
                         new
                         {
                             ID = 27,
-                            Author = "Janis Fay",
-                            Category = "cum",
-                            CoverPage = "https://picsum.photos/50/50/?image=697",
-                            Description = "Atque nobis illo est est repellendus deleniti ut beatae dolorum reprehenderit dolores eos rerum ipsa eligendi consequatur rerum similique nostrum.",
-                            ISBN = 398808720,
-                            PageCount = 292,
-                            PublicationDate = new DateTime(2024, 6, 6, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Deckow, Gislason and Schroeder",
-                            Title = "support directional Managed"
+                            Author = "Vesta Kshlerin",
+                            Category = "itaque",
+                            CoverPage = "https://picsum.photos/50/50/?image=637",
+                            Description = "Architecto ipsam dignissimos in occaecati quos impedit autem dolore vel iure aut ducimus quia reprehenderit fuga eligendi rerum reprehenderit ipsam.",
+                            ISBN = 908185428,
+                            PageCount = 859,
+                            PublicationDate = new DateTime(2024, 2, 15, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Hessel, Carter and Stiedemann",
+                            Title = "East Caribbean Dollar protocol Corporate"
                         },
                         new
                         {
                             ID = 28,
-                            Author = "Declan Cummerata",
-                            Category = "facilis",
-                            CoverPage = "https://picsum.photos/50/50/?image=512",
-                            Description = "Eius illo quos voluptatem consequatur commodi eligendi provident accusantium alias voluptatem ut expedita sit officiis quae pariatur ut ipsam fuga.",
-                            ISBN = 455158235,
-                            PageCount = 145,
-                            PublicationDate = new DateTime(2023, 7, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Smith - Rath",
-                            Title = "Singapore Dollar mobile Orchestrator"
+                            Author = "Kaelyn Baumbach",
+                            Category = "cumque",
+                            CoverPage = "https://picsum.photos/50/50/?image=171",
+                            Description = "Eos eum nulla ipsam quis sit reiciendis atque perferendis sit quibusdam non et blanditiis nemo sit voluptatum recusandae accusamus et.",
+                            ISBN = 932026982,
+                            PageCount = 308,
+                            PublicationDate = new DateTime(2024, 1, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Ebert - Jacobson",
+                            Title = "Point unleash Tools, Kids & Beauty"
                         },
                         new
                         {
                             ID = 29,
-                            Author = "Ivory Wintheiser",
-                            Category = "repellendus",
-                            CoverPage = "https://picsum.photos/50/50/?image=296",
-                            Description = "Facilis blanditiis facilis est ducimus voluptas laboriosam molestiae enim eius magni molestiae quidem id omnis quibusdam eius quasi sit quo.",
-                            ISBN = 208366746,
-                            PageCount = 205,
-                            PublicationDate = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Dickens and Sons",
-                            Title = "AI human-resource Haven"
+                            Author = "Eulalia Lowe",
+                            Category = "rerum",
+                            CoverPage = "https://picsum.photos/50/50/?image=199",
+                            Description = "A eligendi numquam nihil accusantium dolore inventore ipsa et saepe exercitationem molestias sunt aperiam optio tenetur qui ut reprehenderit debitis.",
+                            ISBN = 780713322,
+                            PageCount = 767,
+                            PublicationDate = new DateTime(2023, 8, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Champlin, Runolfsson and DuBuque",
+                            Title = "software firewall Incredible Rubber Gloves"
                         },
                         new
                         {
                             ID = 30,
-                            Author = "Macy Kshlerin",
-                            Category = "eos",
-                            CoverPage = "https://picsum.photos/50/50/?image=329",
-                            Description = "Eos minima dicta mollitia praesentium harum quod natus eum beatae expedita provident deserunt cum ut fugit dolores quidem accusantium non.",
-                            ISBN = 384105863,
-                            PageCount = 242,
-                            PublicationDate = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Homenick, Wisozk and Bogisich",
-                            Title = "invoice grid-enabled Lead"
+                            Author = "Adonis Wolf",
+                            Category = "repellat",
+                            CoverPage = "https://picsum.photos/50/50/?image=1061",
+                            Description = "Neque velit consectetur maxime eum dolore perspiciatis sit sit inventore corporis porro et corrupti et doloremque nisi excepturi et amet.",
+                            ISBN = 389188713,
+                            PageCount = 233,
+                            PublicationDate = new DateTime(2024, 1, 7, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Paucek, Okuneva and Gulgowski",
+                            Title = "Rustic Steel Computer blockchains toolset"
                         },
                         new
                         {
                             ID = 31,
-                            Author = "Nyasia Abshire",
-                            Category = "distinctio",
-                            CoverPage = "https://picsum.photos/50/50/?image=848",
-                            Description = "Quia et sed sint aut iste vero vel iste minima perspiciatis ea maiores alias nesciunt voluptatum laboriosam voluptas veritatis deserunt.",
-                            ISBN = 311176868,
-                            PageCount = 356,
-                            PublicationDate = new DateTime(2023, 8, 16, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Block, Johns and Lebsack",
-                            Title = "Plastic transmitting back up"
+                            Author = "Caroline Murazik",
+                            Category = "totam",
+                            CoverPage = "https://picsum.photos/50/50/?image=286",
+                            Description = "Consequuntur dolore et nulla numquam nulla laborum praesentium et est alias sunt exercitationem et illo labore a cum fugiat fuga.",
+                            ISBN = 317357590,
+                            PageCount = 711,
+                            PublicationDate = new DateTime(2024, 3, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Leffler, Howe and Lowe",
+                            Title = "tan PNG Infrastructure"
                         },
                         new
                         {
                             ID = 32,
-                            Author = "Rossie Abshire",
-                            Category = "ipsum",
-                            CoverPage = "https://picsum.photos/50/50/?image=877",
-                            Description = "Dicta sint magni voluptatem dolores et quia ut rerum dignissimos aut minima quia libero nihil magnam ut voluptatibus tempore possimus.",
-                            ISBN = 237805092,
-                            PageCount = 461,
-                            PublicationDate = new DateTime(2023, 11, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Oberbrunner LLC",
-                            Title = "Incredible Steel Bike COM Industrial, Clothing & Movies"
+                            Author = "Robyn Volkman",
+                            Category = "sed",
+                            CoverPage = "https://picsum.photos/50/50/?image=934",
+                            Description = "Est quidem officiis eveniet laudantium error vel distinctio aperiam enim aut rem dolor perferendis ut recusandae esse voluptatem voluptatibus eum.",
+                            ISBN = 246954182,
+                            PageCount = 719,
+                            PublicationDate = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Swaniawski Group",
+                            Title = "SMTP bypass Soft"
                         },
                         new
                         {
                             ID = 33,
-                            Author = "Nestor Bashirian",
-                            Category = "repellat",
-                            CoverPage = "https://picsum.photos/50/50/?image=506",
-                            Description = "Hic illo voluptatem sint ipsum dolore qui quam dolorem et quaerat unde fuga consequatur tenetur commodi eius animi impedit consequatur.",
-                            ISBN = 748185433,
-                            PageCount = 538,
-                            PublicationDate = new DateTime(2024, 4, 27, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Johnson - Green",
-                            Title = "e-business cyan USB"
+                            Author = "Saige Shanahan",
+                            Category = "suscipit",
+                            CoverPage = "https://picsum.photos/50/50/?image=612",
+                            Description = "Accusamus sit officia consectetur ea eos non aut a soluta fugit repellendus aut doloribus quae ut reiciendis maxime eveniet dicta.",
+                            ISBN = 113871271,
+                            PageCount = 903,
+                            PublicationDate = new DateTime(2024, 5, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Schmitt, Heidenreich and Williamson",
+                            Title = "Synergized Berkshire Investment Account"
                         },
                         new
                         {
                             ID = 34,
-                            Author = "Alexis Botsford",
-                            Category = "sequi",
-                            CoverPage = "https://picsum.photos/50/50/?image=510",
-                            Description = "Beatae veniam nisi rerum distinctio qui quia sapiente non quia earum et et qui assumenda dignissimos reiciendis asperiores fugiat porro.",
-                            ISBN = 388880054,
-                            PageCount = 944,
-                            PublicationDate = new DateTime(2024, 3, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Schiller Group",
-                            Title = "withdrawal tan Security"
+                            Author = "Major Bashirian",
+                            Category = "occaecati",
+                            CoverPage = "https://picsum.photos/50/50/?image=460",
+                            Description = "Quo vel eos fugit ex inventore unde esse quia quam eveniet earum voluptas accusantium quaerat natus voluptas velit dolore dolor.",
+                            ISBN = 954265200,
+                            PageCount = 432,
+                            PublicationDate = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Brakus - Pagac",
+                            Title = "ROI intangible Trafficway"
                         },
                         new
                         {
                             ID = 35,
-                            Author = "Brycen Rosenbaum",
-                            Category = "aut",
-                            CoverPage = "https://picsum.photos/50/50/?image=805",
-                            Description = "In perferendis consequuntur dolores et praesentium amet ullam maxime numquam eos veniam vitae veniam excepturi ad cupiditate aspernatur necessitatibus nam.",
-                            ISBN = 383403765,
-                            PageCount = 143,
-                            PublicationDate = new DateTime(2024, 4, 3, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Lakin - Ritchie",
-                            Title = "quantify alarm encryption"
+                            Author = "Lee Schaden",
+                            Category = "accusantium",
+                            CoverPage = "https://picsum.photos/50/50/?image=791",
+                            Description = "Consequatur in eaque rerum suscipit error nulla est odit sequi veniam doloribus fugit maxime repellat laborum optio omnis modi ullam.",
+                            ISBN = 992579072,
+                            PageCount = 139,
+                            PublicationDate = new DateTime(2024, 6, 12, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Konopelski Group",
+                            Title = "Books & Movies Uruguay deposit"
                         },
                         new
                         {
                             ID = 36,
-                            Author = "Demario Klein",
-                            Category = "odit",
-                            CoverPage = "https://picsum.photos/50/50/?image=481",
-                            Description = "Sint eos vel assumenda totam rerum numquam et necessitatibus blanditiis asperiores molestiae sed nesciunt dolorem ducimus commodi qui quia molestias.",
-                            ISBN = 954988953,
-                            PageCount = 293,
-                            PublicationDate = new DateTime(2023, 11, 30, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Shields Group",
-                            Title = "out-of-the-box Developer extend"
+                            Author = "Andreane Kuhic",
+                            Category = "quod",
+                            CoverPage = "https://picsum.photos/50/50/?image=308",
+                            Description = "Quia doloribus ut sed maxime nostrum minus qui architecto sunt tempore est sed nihil deserunt distinctio sed sed repellendus veritatis.",
+                            ISBN = 416828507,
+                            PageCount = 93,
+                            PublicationDate = new DateTime(2023, 10, 9, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Windler, Prohaska and Haag",
+                            Title = "primary PCI Rustic Fresh Gloves"
                         },
                         new
                         {
                             ID = 37,
-                            Author = "Arne Hane",
-                            Category = "nobis",
-                            CoverPage = "https://picsum.photos/50/50/?image=1068",
-                            Description = "Voluptatum repudiandae sunt cumque reprehenderit aliquid consequatur velit beatae et illum eos facere neque illum officiis recusandae harum qui hic.",
-                            ISBN = 861095716,
-                            PageCount = 111,
-                            PublicationDate = new DateTime(2024, 1, 19, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Beer, Tremblay and Wyman",
-                            Title = "Fantastic Cotton Cheese methodologies contextually-based"
+                            Author = "Vivian Grant",
+                            Category = "aliquam",
+                            CoverPage = "https://picsum.photos/50/50/?image=747",
+                            Description = "Velit labore quo dolor in doloremque quia a et praesentium commodi qui corrupti doloribus omnis tempora id et consequatur harum.",
+                            ISBN = 683706703,
+                            PageCount = 303,
+                            PublicationDate = new DateTime(2023, 9, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Ankunding - Nikolaus",
+                            Title = "Legacy Fantastic Fresh Tuna solid state"
                         },
                         new
                         {
                             ID = 38,
-                            Author = "Wilber Bradtke",
-                            Category = "adipisci",
-                            CoverPage = "https://picsum.photos/50/50/?image=1065",
-                            Description = "Nam quasi unde qui necessitatibus mollitia repudiandae culpa dolore in quo minima iure aut consequatur aut reprehenderit non non iure.",
-                            ISBN = 582931949,
-                            PageCount = 332,
-                            PublicationDate = new DateTime(2023, 12, 10, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Shields and Sons",
-                            Title = "Hryvnia strategic Gorgeous Metal Cheese"
+                            Author = "Kasandra Klein",
+                            Category = "qui",
+                            CoverPage = "https://picsum.photos/50/50/?image=630",
+                            Description = "Quas quae neque labore doloribus consequuntur voluptas sint totam maxime accusantium maiores facere soluta ducimus omnis voluptas explicabo sit itaque.",
+                            ISBN = 436378127,
+                            PageCount = 240,
+                            PublicationDate = new DateTime(2023, 11, 30, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Johns, Rath and Hahn",
+                            Title = "Stravenue Checking Account Analyst"
                         },
                         new
                         {
                             ID = 39,
-                            Author = "Johnny Murazik",
-                            Category = "eligendi",
-                            CoverPage = "https://picsum.photos/50/50/?image=956",
-                            Description = "Provident qui sint excepturi provident temporibus quia aut illo maiores numquam adipisci aperiam perspiciatis saepe eos inventore ea est eos.",
-                            ISBN = 656616885,
-                            PageCount = 670,
-                            PublicationDate = new DateTime(2024, 1, 13, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Von Group",
-                            Title = "Orchestrator transitional Iraq"
+                            Author = "Otho Fay",
+                            Category = "veritatis",
+                            CoverPage = "https://picsum.photos/50/50/?image=279",
+                            Description = "Minus vel est aut voluptatem necessitatibus rerum iusto a unde totam ab voluptas ex nulla illo impedit rerum nobis aut.",
+                            ISBN = 631356311,
+                            PageCount = 605,
+                            PublicationDate = new DateTime(2023, 12, 18, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Adams LLC",
+                            Title = "Euro Lilangeni Fantastic"
                         },
                         new
                         {
                             ID = 40,
-                            Author = "Tevin Schamberger",
-                            Category = "saepe",
-                            CoverPage = "https://picsum.photos/50/50/?image=360",
-                            Description = "Cupiditate fuga est consequatur provident ipsum sint sequi aut tempora perferendis ipsum eum molestiae repudiandae ut voluptatum et tempora modi.",
-                            ISBN = 683922366,
-                            PageCount = 62,
-                            PublicationDate = new DateTime(2023, 11, 12, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Jerde - Olson",
-                            Title = "Investor e-tailers Oman"
+                            Author = "Jacques Kilback",
+                            Category = "illo",
+                            CoverPage = "https://picsum.photos/50/50/?image=118",
+                            Description = "Occaecati iusto tempora dolorem incidunt sed necessitatibus debitis deserunt atque praesentium consequatur nam tempora a est atque qui molestiae ut.",
+                            ISBN = 162905232,
+                            PageCount = 613,
+                            PublicationDate = new DateTime(2023, 11, 30, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Yost, Botsford and Casper",
+                            Title = "Ergonomic Configurable Response"
                         },
                         new
                         {
                             ID = 41,
-                            Author = "Emmet Powlowski",
-                            Category = "pariatur",
-                            CoverPage = "https://picsum.photos/50/50/?image=601",
-                            Description = "Enim sit ullam eum repudiandae libero adipisci adipisci ut consequatur cupiditate vel quis molestiae libero possimus quam sit magnam ratione.",
-                            ISBN = 495941456,
-                            PageCount = 463,
-                            PublicationDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Kling - McClure",
-                            Title = "PNG Investment Account Intelligent"
+                            Author = "Zackery Mitchell",
+                            Category = "corrupti",
+                            CoverPage = "https://picsum.photos/50/50/?image=461",
+                            Description = "Sit et repudiandae dolores ut molestiae blanditiis cum eligendi et fugiat blanditiis dicta cumque praesentium unde voluptatem repellendus non et.",
+                            ISBN = 244382031,
+                            PageCount = 315,
+                            PublicationDate = new DateTime(2023, 8, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Little - Schroeder",
+                            Title = "Configurable port copying"
                         },
                         new
                         {
                             ID = 42,
-                            Author = "Mortimer Veum",
-                            Category = "enim",
-                            CoverPage = "https://picsum.photos/50/50/?image=124",
-                            Description = "Assumenda est magni ut iure doloribus dolor quia quaerat culpa autem doloremque nam reprehenderit possimus ut distinctio sit qui culpa.",
-                            ISBN = 879393402,
-                            PageCount = 530,
-                            PublicationDate = new DateTime(2024, 5, 19, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Altenwerth - Kozey",
-                            Title = "panel generate Granite"
+                            Author = "Gregoria Rodriguez",
+                            Category = "et",
+                            CoverPage = "https://picsum.photos/50/50/?image=261",
+                            Description = "Suscipit similique quasi cupiditate dolores nobis veniam minima qui ut aut vel dolorem ab et aut molestiae perferendis natus est.",
+                            ISBN = 427927498,
+                            PageCount = 144,
+                            PublicationDate = new DateTime(2024, 4, 6, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Donnelly - Bauch",
+                            Title = "violet Paradigm payment"
                         },
                         new
                         {
                             ID = 43,
-                            Author = "Quinn Adams",
-                            Category = "aperiam",
-                            CoverPage = "https://picsum.photos/50/50/?image=309",
-                            Description = "Delectus fuga quasi quas quisquam et nam non error facere quia laboriosam dolore sed voluptas ipsum sit tempore harum deserunt.",
-                            ISBN = 715893772,
-                            PageCount = 181,
-                            PublicationDate = new DateTime(2023, 6, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Baumbach, Parker and Green",
-                            Title = "SQL Ways alliance"
+                            Author = "Norberto Labadie",
+                            Category = "aliquam",
+                            CoverPage = "https://picsum.photos/50/50/?image=604",
+                            Description = "Minima quia quidem corrupti fugiat nam non blanditiis maiores ullam placeat sint facilis consequatur consequatur similique neque dolor assumenda impedit.",
+                            ISBN = 917240589,
+                            PageCount = 696,
+                            PublicationDate = new DateTime(2023, 7, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Schultz Group",
+                            Title = "Plastic transmitter Kids & Toys"
                         },
                         new
                         {
                             ID = 44,
-                            Author = "Tremaine Murphy",
-                            Category = "et",
-                            CoverPage = "https://picsum.photos/50/50/?image=867",
-                            Description = "Maiores corrupti omnis velit quibusdam repellendus et quasi minima nesciunt et eos perspiciatis nemo incidunt non velit aperiam est ullam.",
-                            ISBN = 155078104,
-                            PageCount = 826,
-                            PublicationDate = new DateTime(2023, 8, 3, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Terry Inc",
-                            Title = "tan world-class ubiquitous"
+                            Author = "Erwin Champlin",
+                            Category = "deleniti",
+                            CoverPage = "https://picsum.photos/50/50/?image=624",
+                            Description = "Repellat iure quae magnam reprehenderit hic voluptatem rerum hic eos reprehenderit rerum blanditiis aut fugiat facere quam aut sed dolorem.",
+                            ISBN = 602829269,
+                            PageCount = 742,
+                            PublicationDate = new DateTime(2024, 1, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Green, Torp and Feest",
+                            Title = "magenta SMS deposit"
                         },
                         new
                         {
                             ID = 45,
-                            Author = "Norval O'Kon",
-                            Category = "velit",
-                            CoverPage = "https://picsum.photos/50/50/?image=181",
-                            Description = "Amet id nesciunt laborum et nulla aut quasi ut quidem dolorem in quae eum sed doloremque aliquam similique eum aut.",
-                            ISBN = 856482012,
-                            PageCount = 166,
-                            PublicationDate = new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Brown Group",
-                            Title = "Fresh Estate Unbranded Cotton Chicken"
+                            Author = "Destiney Conn",
+                            Category = "veniam",
+                            CoverPage = "https://picsum.photos/50/50/?image=946",
+                            Description = "Alias libero deleniti libero ipsum possimus error delectus necessitatibus ut quia suscipit magnam beatae in omnis omnis sint voluptas est.",
+                            ISBN = 531433403,
+                            PageCount = 621,
+                            PublicationDate = new DateTime(2023, 9, 17, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Simonis - Konopelski",
+                            Title = "Rubber Shores Square"
                         },
                         new
                         {
                             ID = 46,
-                            Author = "Anabelle Cartwright",
-                            Category = "aliquid",
-                            CoverPage = "https://picsum.photos/50/50/?image=489",
-                            Description = "Esse saepe amet eligendi qui dolores aut reiciendis ea nesciunt libero reprehenderit velit itaque odit sit laudantium libero aut eum.",
-                            ISBN = 136360751,
-                            PageCount = 466,
-                            PublicationDate = new DateTime(2023, 6, 27, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Ondricka and Sons",
-                            Title = "payment generate redundant"
+                            Author = "Brandi Prosacco",
+                            Category = "quis",
+                            CoverPage = "https://picsum.photos/50/50/?image=677",
+                            Description = "Aut quasi aliquam accusantium consectetur labore voluptas nesciunt numquam dolorem dolorem incidunt sed nisi sequi iure quam id assumenda nobis.",
+                            ISBN = 923301416,
+                            PageCount = 415,
+                            PublicationDate = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Farrell LLC",
+                            Title = "Producer hack Cambridgeshire"
                         },
                         new
                         {
                             ID = 47,
-                            Author = "Helena Murphy",
-                            Category = "iste",
-                            CoverPage = "https://picsum.photos/50/50/?image=824",
-                            Description = "Quod qui enim non accusantium aut repudiandae delectus animi sit veniam perferendis aspernatur officia ipsum occaecati facere sint ea harum.",
-                            ISBN = 514710215,
-                            PageCount = 682,
-                            PublicationDate = new DateTime(2024, 1, 5, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Wolf LLC",
-                            Title = "invoice scale Games"
+                            Author = "Johnson Auer",
+                            Category = "eveniet",
+                            CoverPage = "https://picsum.photos/50/50/?image=202",
+                            Description = "Accusamus inventore sapiente accusantium accusantium enim id repudiandae expedita soluta omnis modi est facilis tempora aperiam sint optio et sit.",
+                            ISBN = 593263178,
+                            PageCount = 316,
+                            PublicationDate = new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Lakin LLC",
+                            Title = "Generic Concrete Gloves Tasty Directives"
                         },
                         new
                         {
                             ID = 48,
-                            Author = "Roberto Waelchi",
-                            Category = "non",
-                            CoverPage = "https://picsum.photos/50/50/?image=478",
-                            Description = "Vitae voluptatum rem eos exercitationem ratione dolores et sed soluta sapiente facere amet dolorem et dolore quia repellendus consequatur quas.",
-                            ISBN = 885665456,
-                            PageCount = 961,
-                            PublicationDate = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Little LLC",
-                            Title = "overriding Virgin Islands, British panel"
+                            Author = "Shea Cassin",
+                            Category = "ut",
+                            CoverPage = "https://picsum.photos/50/50/?image=235",
+                            Description = "Aut perferendis ea id atque quis assumenda quia a excepturi suscipit et deleniti ab voluptas quam odit assumenda illo inventore.",
+                            ISBN = 604121066,
+                            PageCount = 428,
+                            PublicationDate = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Gleichner - Armstrong",
+                            Title = "impactful Gorgeous Frozen Shoes Bedfordshire"
                         },
                         new
                         {
                             ID = 49,
-                            Author = "Garry Senger",
-                            Category = "vel",
-                            CoverPage = "https://picsum.photos/50/50/?image=120",
-                            Description = "Voluptate at consectetur voluptatum itaque ad et ullam repudiandae omnis libero nisi id quia dolor beatae optio non est minus.",
-                            ISBN = 493495945,
-                            PageCount = 763,
-                            PublicationDate = new DateTime(2024, 6, 12, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Runte Group",
-                            Title = "Uganda Shilling Central Music & Music"
+                            Author = "Elwin Toy",
+                            Category = "veniam",
+                            CoverPage = "https://picsum.photos/50/50/?image=309",
+                            Description = "Explicabo repudiandae distinctio ullam omnis qui qui et suscipit expedita eum corporis dolor aperiam quaerat repellendus blanditiis doloremque aut error.",
+                            ISBN = 474752260,
+                            PageCount = 945,
+                            PublicationDate = new DateTime(2023, 8, 7, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Littel, Ondricka and Treutel",
+                            Title = "New Hampshire Tasty Rubber Chicken Practical Frozen Fish"
                         },
                         new
                         {
                             ID = 50,
-                            Author = "Noel Kautzer",
-                            Category = "cupiditate",
-                            CoverPage = "https://picsum.photos/50/50/?image=684",
-                            Description = "Impedit similique quia molestias hic rerum est quia ipsa quae repellat quo qui quod sapiente doloremque numquam commodi repellendus et.",
-                            ISBN = 109455612,
-                            PageCount = 108,
-                            PublicationDate = new DateTime(2023, 9, 8, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Mills - Bogisich",
-                            Title = "Arkansas Generic Steel Soap maroon"
+                            Author = "William Reinger",
+                            Category = "dicta",
+                            CoverPage = "https://picsum.photos/50/50/?image=1008",
+                            Description = "Molestias corrupti nobis quae repellendus deleniti vel nihil dolorem fugiat accusamus iste veritatis laudantium et est excepturi deleniti aut nam.",
+                            ISBN = 967834839,
+                            PageCount = 633,
+                            PublicationDate = new DateTime(2023, 7, 13, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Von Group",
+                            Title = "seamless Associate Home"
                         },
                         new
                         {
                             ID = 51,
-                            Author = "Demetris Bauch",
-                            Category = "impedit",
-                            CoverPage = "https://picsum.photos/50/50/?image=280",
-                            Description = "Sint velit incidunt aspernatur et sit fuga explicabo dolore hic ut et et vel sit necessitatibus nostrum nisi labore iusto.",
-                            ISBN = 632932273,
-                            PageCount = 277,
-                            PublicationDate = new DateTime(2023, 9, 15, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Gaylord, Mraz and Lindgren",
-                            Title = "scale transform compressing"
+                            Author = "Devyn Conn",
+                            Category = "non",
+                            CoverPage = "https://picsum.photos/50/50/?image=993",
+                            Description = "Facilis accusamus odio modi sed accusamus fugiat cupiditate veritatis voluptas autem consequatur officia consequatur distinctio placeat est vero voluptatem aut.",
+                            ISBN = 420021800,
+                            PageCount = 141,
+                            PublicationDate = new DateTime(2023, 8, 13, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Cormier, Considine and Haley",
+                            Title = "Savings Account expedite FTP"
                         },
                         new
                         {
                             ID = 52,
-                            Author = "Nona Barrows",
-                            Category = "optio",
-                            CoverPage = "https://picsum.photos/50/50/?image=20",
-                            Description = "Corporis vel ullam rem necessitatibus quo placeat ullam voluptas consequuntur voluptas dolore sit tempore earum autem officiis ut eum temporibus.",
-                            ISBN = 488719969,
-                            PageCount = 420,
-                            PublicationDate = new DateTime(2023, 12, 29, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Raynor, Weber and Pacocha",
-                            Title = "Incredible Steel Keyboard Triple-buffered Sleek Fresh Keyboard"
+                            Author = "Tanner Hane",
+                            Category = "qui",
+                            CoverPage = "https://picsum.photos/50/50/?image=1070",
+                            Description = "Officiis rerum quia reiciendis dolores impedit ut ut qui rem repellendus esse doloribus ipsam quis id molestiae voluptatem dolorum vel.",
+                            ISBN = 680349654,
+                            PageCount = 738,
+                            PublicationDate = new DateTime(2023, 8, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Torp, Stokes and Halvorson",
+                            Title = "connecting open-source Afghani"
                         },
                         new
                         {
                             ID = 53,
-                            Author = "Anne Tillman",
-                            Category = "error",
-                            CoverPage = "https://picsum.photos/50/50/?image=709",
-                            Description = "Tenetur cumque esse soluta illum ex dolores neque molestias ad sit vero ipsam ut reiciendis voluptatibus itaque et repellendus impedit.",
-                            ISBN = 209913515,
-                            PageCount = 356,
-                            PublicationDate = new DateTime(2024, 1, 10, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Leffler Group",
-                            Title = "withdrawal Security microchip"
+                            Author = "Tyra Brakus",
+                            Category = "ut",
+                            CoverPage = "https://picsum.photos/50/50/?image=638",
+                            Description = "Excepturi doloribus et aliquam dolores omnis et consequuntur accusamus ullam eligendi deserunt distinctio error tempora nisi magnam et est aspernatur.",
+                            ISBN = 501400273,
+                            PageCount = 650,
+                            PublicationDate = new DateTime(2024, 4, 26, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Keeling and Sons",
+                            Title = "Organic Belize Credit Card Account"
                         },
                         new
                         {
                             ID = 54,
-                            Author = "Yasmin Botsford",
-                            Category = "et",
-                            CoverPage = "https://picsum.photos/50/50/?image=1020",
-                            Description = "Amet ut est aspernatur atque autem laborum dolores quos id rem odit totam ipsum voluptatum ullam asperiores animi ut dolores.",
-                            ISBN = 110701354,
-                            PageCount = 371,
-                            PublicationDate = new DateTime(2023, 7, 15, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Heidenreich, Dach and Fay",
-                            Title = "port orange Kenya"
+                            Author = "Jonas Sanford",
+                            Category = "sit",
+                            CoverPage = "https://picsum.photos/50/50/?image=386",
+                            Description = "Sequi in et sunt facere omnis quos earum deleniti vitae ab temporibus est nihil odio et molestias amet vitae est.",
+                            ISBN = 914459801,
+                            PageCount = 281,
+                            PublicationDate = new DateTime(2023, 8, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Cole, Christiansen and Witting",
+                            Title = "Nakfa Granite North Carolina"
                         },
                         new
                         {
                             ID = 55,
-                            Author = "Rashad Jenkins",
-                            Category = "iure",
-                            CoverPage = "https://picsum.photos/50/50/?image=348",
-                            Description = "Amet at ea corporis numquam est iure minima necessitatibus molestiae saepe aspernatur consequatur omnis voluptatum numquam facere deleniti aliquam non.",
-                            ISBN = 714495643,
-                            PageCount = 297,
-                            PublicationDate = new DateTime(2024, 4, 13, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Rolfson - Adams",
-                            Title = "Fresh magnetic Island"
+                            Author = "Jerad Ankunding",
+                            Category = "culpa",
+                            CoverPage = "https://picsum.photos/50/50/?image=741",
+                            Description = "Consequatur deleniti ad vel placeat doloribus libero ab dolorem perspiciatis rerum eligendi vitae accusamus temporibus nostrum eius rerum veritatis soluta.",
+                            ISBN = 614022527,
+                            PageCount = 558,
+                            PublicationDate = new DateTime(2023, 8, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Balistreri, Moen and Upton",
+                            Title = "Licensed program Virtual"
                         },
                         new
                         {
                             ID = 56,
-                            Author = "Santino Jacobson",
-                            Category = "iusto",
-                            CoverPage = "https://picsum.photos/50/50/?image=308",
-                            Description = "Reprehenderit sit distinctio nostrum architecto ex aut quis dolorum rerum eum pariatur tempore saepe architecto ducimus assumenda et ea nihil.",
-                            ISBN = 391740420,
-                            PageCount = 204,
-                            PublicationDate = new DateTime(2023, 8, 11, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Blick, Medhurst and Prosacco",
-                            Title = "Ecuador auxiliary Metrics"
+                            Author = "Caroline Legros",
+                            Category = "ipsum",
+                            CoverPage = "https://picsum.photos/50/50/?image=734",
+                            Description = "Voluptatum voluptatibus architecto rem ipsa nobis voluptatem omnis temporibus unde tempore quia est dolores ab aut quos aut molestiae tempore.",
+                            ISBN = 170759354,
+                            PageCount = 128,
+                            PublicationDate = new DateTime(2024, 4, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Carter, Nolan and Friesen",
+                            Title = "Concrete payment Checking Account"
                         },
                         new
                         {
                             ID = 57,
-                            Author = "Terence Daniel",
-                            Category = "qui",
-                            CoverPage = "https://picsum.photos/50/50/?image=612",
-                            Description = "Facere voluptatem cumque pariatur eius sequi non ut consequatur esse veritatis aut aut itaque unde perspiciatis modi possimus qui beatae.",
-                            ISBN = 103695549,
-                            PageCount = 242,
-                            PublicationDate = new DateTime(2024, 2, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Rolfson, Vandervort and Sipes",
-                            Title = "back-end Garden synergistic"
+                            Author = "Noemi Frami",
+                            Category = "architecto",
+                            CoverPage = "https://picsum.photos/50/50/?image=321",
+                            Description = "Voluptas et iste magnam inventore adipisci nihil dignissimos rerum aliquam qui aliquid unde at repellat magnam explicabo sed et sapiente.",
+                            ISBN = 992880895,
+                            PageCount = 170,
+                            PublicationDate = new DateTime(2023, 6, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Jacobi - Murazik",
+                            Title = "Gorgeous Borders back up"
                         },
                         new
                         {
                             ID = 58,
-                            Author = "Shanna Walter",
-                            Category = "numquam",
-                            CoverPage = "https://picsum.photos/50/50/?image=865",
-                            Description = "Error odio ex odio est omnis quia eos repellendus est enim labore ut vel doloribus reprehenderit sit nam quaerat labore.",
-                            ISBN = 258811784,
-                            PageCount = 205,
-                            PublicationDate = new DateTime(2024, 4, 29, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Terry - Luettgen",
-                            Title = "JBOD generate vortals"
+                            Author = "Peyton Green",
+                            Category = "corrupti",
+                            CoverPage = "https://picsum.photos/50/50/?image=1011",
+                            Description = "Et in dolores quia laboriosam totam quibusdam eos aut aut laudantium nihil magni hic et vero explicabo enim excepturi hic.",
+                            ISBN = 350381402,
+                            PageCount = 121,
+                            PublicationDate = new DateTime(2023, 7, 9, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Buckridge LLC",
+                            Title = "Health & Grocery payment Field"
                         },
                         new
                         {
                             ID = 59,
-                            Author = "Savanah Crooks",
-                            Category = "facere",
-                            CoverPage = "https://picsum.photos/50/50/?image=676",
-                            Description = "Commodi quaerat ea perferendis sed est aut dolorem vero aliquid voluptatem modi cumque aut beatae voluptas quibusdam enim cum minima.",
-                            ISBN = 258800303,
-                            PageCount = 311,
-                            PublicationDate = new DateTime(2023, 12, 11, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Hahn LLC",
-                            Title = "AI deposit Future"
+                            Author = "Ethyl Dooley",
+                            Category = "error",
+                            CoverPage = "https://picsum.photos/50/50/?image=674",
+                            Description = "Eos consequatur expedita sunt est natus sed sint totam dicta atque ipsam nulla veniam iste eius rem minima tempora est.",
+                            ISBN = 885511053,
+                            PageCount = 336,
+                            PublicationDate = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Lueilwitz - Hagenes",
+                            Title = "bricks-and-clicks quantifying withdrawal"
                         },
                         new
                         {
                             ID = 60,
-                            Author = "Alberto Mosciski",
-                            Category = "rerum",
-                            CoverPage = "https://picsum.photos/50/50/?image=252",
-                            Description = "Distinctio debitis voluptatem omnis amet tempore totam sunt cum distinctio animi laudantium rerum sed eligendi dolore saepe error et consequatur.",
-                            ISBN = 833455866,
-                            PageCount = 615,
-                            PublicationDate = new DateTime(2023, 8, 2, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Hirthe - Heller",
-                            Title = "Lodge firewall Synergistic"
+                            Author = "Eugene Adams",
+                            Category = "quia",
+                            CoverPage = "https://picsum.photos/50/50/?image=220",
+                            Description = "Rerum ut vel maxime velit dolore nulla nemo voluptatem et ut velit quis sit temporibus error accusantium consequuntur et in.",
+                            ISBN = 179994623,
+                            PageCount = 680,
+                            PublicationDate = new DateTime(2023, 8, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Rowe and Sons",
+                            Title = "parsing Drive generate"
                         },
                         new
                         {
                             ID = 61,
-                            Author = "Lauryn Raynor",
-                            Category = "maiores",
-                            CoverPage = "https://picsum.photos/50/50/?image=975",
-                            Description = "Aliquid quia non natus ex amet sequi sit quos doloremque est aut consequuntur earum enim laudantium inventore sequi officiis aliquid.",
-                            ISBN = 713202894,
-                            PageCount = 780,
-                            PublicationDate = new DateTime(2023, 11, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Connelly Group",
-                            Title = "Seamless Savings Account supply-chains"
+                            Author = "Esperanza Schuster",
+                            Category = "necessitatibus",
+                            CoverPage = "https://picsum.photos/50/50/?image=356",
+                            Description = "Ipsa ut error ullam praesentium dignissimos distinctio accusamus ea dolorem est delectus quasi voluptatem veniam occaecati minima earum illo aut.",
+                            ISBN = 363273603,
+                            PageCount = 677,
+                            PublicationDate = new DateTime(2024, 3, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Jacobson - West",
+                            Title = "Director Credit Card Account Tasty"
                         },
                         new
                         {
                             ID = 62,
-                            Author = "Aurelie Hackett",
-                            Category = "rerum",
-                            CoverPage = "https://picsum.photos/50/50/?image=601",
-                            Description = "Distinctio ut soluta suscipit vitae aperiam sit quia est itaque quis officia voluptatum illum quia deleniti vel assumenda illum non.",
-                            ISBN = 541589828,
-                            PageCount = 758,
-                            PublicationDate = new DateTime(2023, 12, 27, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Dibbert, Pouros and Ruecker",
-                            Title = "Direct invoice Florida"
+                            Author = "Quentin Hahn",
+                            Category = "tempore",
+                            CoverPage = "https://picsum.photos/50/50/?image=164",
+                            Description = "Molestiae exercitationem cupiditate deserunt id sint expedita illum fuga minus porro vel vel blanditiis labore nihil adipisci cum eligendi sed.",
+                            ISBN = 519928836,
+                            PageCount = 726,
+                            PublicationDate = new DateTime(2023, 11, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Gerlach - Howell",
+                            Title = "index transmit primary"
                         },
                         new
                         {
                             ID = 63,
-                            Author = "Raleigh Schimmel",
-                            Category = "velit",
-                            CoverPage = "https://picsum.photos/50/50/?image=840",
-                            Description = "Soluta quod et est et ut pariatur et id odit et distinctio ut eos sit aut dicta tempora natus sed.",
-                            ISBN = 493309497,
-                            PageCount = 265,
-                            PublicationDate = new DateTime(2023, 11, 2, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Carroll - Wisoky",
-                            Title = "quantify Gibraltar Pound Implemented"
+                            Author = "Maxwell Reilly",
+                            Category = "dolor",
+                            CoverPage = "https://picsum.photos/50/50/?image=793",
+                            Description = "Quia commodi illo quidem rerum quia vero voluptate et ut fugit odit et molestias perspiciatis commodi laboriosam dolores unde sed.",
+                            ISBN = 868451266,
+                            PageCount = 953,
+                            PublicationDate = new DateTime(2023, 7, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Zulauf - Wunsch",
+                            Title = "Dynamic Granite Bedfordshire"
                         },
                         new
                         {
                             ID = 64,
-                            Author = "Peggie Oberbrunner",
-                            Category = "molestiae",
-                            CoverPage = "https://picsum.photos/50/50/?image=956",
-                            Description = "Et explicabo veritatis rerum eligendi qui aut ducimus laborum sit omnis aut cumque necessitatibus vitae dolores doloremque magni sit quia.",
-                            ISBN = 416618982,
-                            PageCount = 359,
-                            PublicationDate = new DateTime(2023, 12, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Konopelski Group",
-                            Title = "payment Money Market Account Cliffs"
+                            Author = "Manley O'Conner",
+                            Category = "consequatur",
+                            CoverPage = "https://picsum.photos/50/50/?image=907",
+                            Description = "Sint non eligendi natus fuga ipsum excepturi tenetur aperiam quaerat natus aut ut mollitia quis sit doloribus nemo qui in.",
+                            ISBN = 649609556,
+                            PageCount = 600,
+                            PublicationDate = new DateTime(2023, 12, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Dickens, Spencer and Donnelly",
+                            Title = "Toys Investment Account deliver"
                         },
                         new
                         {
                             ID = 65,
-                            Author = "Bailey Jacobs",
-                            Category = "eos",
-                            CoverPage = "https://picsum.photos/50/50/?image=167",
-                            Description = "Libero ab cumque maiores dicta voluptas voluptas et exercitationem ipsa excepturi ut autem quaerat nulla qui laborum nemo voluptas sunt.",
-                            ISBN = 878014356,
-                            PageCount = 970,
-                            PublicationDate = new DateTime(2023, 10, 15, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Hand - Walsh",
-                            Title = "functionalities Lebanon Soft"
+                            Author = "Jerald Mitchell",
+                            Category = "odio",
+                            CoverPage = "https://picsum.photos/50/50/?image=72",
+                            Description = "Libero harum facere nostrum sit quia sed illum dolores eaque hic eius est fugiat repellendus ratione deleniti minima aut nemo.",
+                            ISBN = 612676389,
+                            PageCount = 377,
+                            PublicationDate = new DateTime(2023, 7, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Steuber, Parker and Rath",
+                            Title = "Dynamic monitor Home Loan Account"
                         },
                         new
                         {
                             ID = 66,
-                            Author = "Gene Padberg",
-                            Category = "quisquam",
-                            CoverPage = "https://picsum.photos/50/50/?image=698",
-                            Description = "Voluptas doloremque cupiditate sequi atque ut aut quia eius itaque rerum qui dicta sed iure debitis numquam eos repellendus enim.",
-                            ISBN = 241890828,
-                            PageCount = 497,
-                            PublicationDate = new DateTime(2024, 3, 29, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Bednar LLC",
-                            Title = "brand Technician Factors"
+                            Author = "Kelli McClure",
+                            Category = "vitae",
+                            CoverPage = "https://picsum.photos/50/50/?image=964",
+                            Description = "Ut omnis ratione qui nihil ut sunt rerum ipsam aut et voluptates atque et assumenda recusandae ut nihil dicta aperiam.",
+                            ISBN = 115477007,
+                            PageCount = 541,
+                            PublicationDate = new DateTime(2024, 1, 16, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Feest - Wyman",
+                            Title = "Concrete Balanced Washington"
                         },
                         new
                         {
                             ID = 67,
-                            Author = "Ceasar Champlin",
-                            Category = "dolore",
-                            CoverPage = "https://picsum.photos/50/50/?image=590",
-                            Description = "Animi voluptatem suscipit ea ipsum sed ea odit debitis eligendi reiciendis nam laboriosam ipsam saepe asperiores nihil laudantium nihil et.",
-                            ISBN = 659573345,
-                            PageCount = 905,
-                            PublicationDate = new DateTime(2023, 8, 13, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Grimes and Sons",
-                            Title = "Games Fresh Summit"
+                            Author = "Fay Block",
+                            Category = "expedita",
+                            CoverPage = "https://picsum.photos/50/50/?image=186",
+                            Description = "Maxime excepturi recusandae dignissimos sunt soluta aliquid modi tempora odit facilis consequuntur et adipisci ea sit modi incidunt illo consequatur.",
+                            ISBN = 208666282,
+                            PageCount = 57,
+                            PublicationDate = new DateTime(2023, 8, 17, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Dickens and Sons",
+                            Title = "Rustic Rubber Shirt Director Licensed Granite Sausages"
                         },
                         new
                         {
                             ID = 68,
-                            Author = "Tyrel Mitchell",
-                            Category = "repellat",
-                            CoverPage = "https://picsum.photos/50/50/?image=912",
-                            Description = "Totam eum adipisci dolor ipsa natus nam eos alias eveniet ipsa facere maiores ipsum aut ut enim aperiam molestias neque.",
-                            ISBN = 894000876,
-                            PageCount = 276,
-                            PublicationDate = new DateTime(2024, 6, 13, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Kling, Kris and Bergstrom",
-                            Title = "Lesotho Loti emulation blue"
+                            Author = "Stanley Hermiston",
+                            Category = "sapiente",
+                            CoverPage = "https://picsum.photos/50/50/?image=453",
+                            Description = "Quibusdam excepturi odio consequatur iste aperiam quia ut ut amet autem tempore accusantium eos ab alias reiciendis ea nihil illum.",
+                            ISBN = 191632809,
+                            PageCount = 199,
+                            PublicationDate = new DateTime(2023, 9, 15, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Bradtke, Okuneva and Pouros",
+                            Title = "Quality-focused Identity Unbranded Granite Keyboard"
                         },
                         new
                         {
                             ID = 69,
-                            Author = "Laurie Littel",
-                            Category = "ab",
-                            CoverPage = "https://picsum.photos/50/50/?image=785",
-                            Description = "Facilis quidem sapiente provident quia dolores neque accusamus porro nam dolores quo et corporis est autem recusandae ex quas in.",
-                            ISBN = 643967347,
-                            PageCount = 789,
-                            PublicationDate = new DateTime(2024, 1, 16, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "McGlynn - Mitchell",
-                            Title = "Generic Steel Hat leverage experiences"
+                            Author = "Leo Stamm",
+                            Category = "saepe",
+                            CoverPage = "https://picsum.photos/50/50/?image=204",
+                            Description = "Quia id exercitationem voluptatem doloremque asperiores quo ipsam consectetur ut fugiat quaerat odit natus alias iste minus autem ipsa doloremque.",
+                            ISBN = 202611587,
+                            PageCount = 162,
+                            PublicationDate = new DateTime(2024, 1, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Welch and Sons",
+                            Title = "Neck AI Operative"
                         },
                         new
                         {
                             ID = 70,
-                            Author = "Darius Emmerich",
-                            Category = "et",
-                            CoverPage = "https://picsum.photos/50/50/?image=1",
-                            Description = "Nihil et provident dolor aut provident veniam sequi odio doloribus sit laborum ut rerum quisquam ducimus ut vel voluptatem natus.",
-                            ISBN = 744504062,
-                            PageCount = 854,
-                            PublicationDate = new DateTime(2023, 7, 19, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Fahey, Wunsch and McGlynn",
-                            Title = "Fort payment Bedfordshire"
+                            Author = "Pansy Kulas",
+                            Category = "soluta",
+                            CoverPage = "https://picsum.photos/50/50/?image=195",
+                            Description = "Neque consequatur nihil qui nobis qui cum et nostrum voluptatum quod animi adipisci recusandae nemo consectetur qui labore quisquam totam.",
+                            ISBN = 573476029,
+                            PageCount = 551,
+                            PublicationDate = new DateTime(2024, 3, 18, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Braun, Stark and Cruickshank",
+                            Title = "Licensed Fresh Tuna Arkansas back up"
                         },
                         new
                         {
                             ID = 71,
-                            Author = "Micheal Jones",
-                            Category = "vel",
-                            CoverPage = "https://picsum.photos/50/50/?image=1006",
-                            Description = "Ratione ab animi reiciendis qui facere non corrupti perspiciatis aperiam aut vel provident odio itaque hic veritatis eius impedit doloremque.",
-                            ISBN = 782426868,
-                            PageCount = 743,
-                            PublicationDate = new DateTime(2024, 2, 29, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Zboncak LLC",
-                            Title = "Cambridgeshire override communities"
+                            Author = "Selmer Bartell",
+                            Category = "et",
+                            CoverPage = "https://picsum.photos/50/50/?image=927",
+                            Description = "Ab dolores consequuntur explicabo incidunt maiores enim ratione sequi qui eos aut et deserunt aperiam autem eum labore dolorem repellendus.",
+                            ISBN = 682657901,
+                            PageCount = 558,
+                            PublicationDate = new DateTime(2023, 8, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Brakus - Bernier",
+                            Title = "connecting port National"
                         },
                         new
                         {
                             ID = 72,
-                            Author = "Jarvis Waelchi",
-                            Category = "dolorem",
-                            CoverPage = "https://picsum.photos/50/50/?image=336",
-                            Description = "Soluta officia voluptatem doloremque non qui fuga illum reprehenderit laudantium deserunt debitis modi numquam eum ea sed excepturi voluptas vitae.",
-                            ISBN = 670817228,
-                            PageCount = 990,
-                            PublicationDate = new DateTime(2023, 12, 19, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Jakubowski, Cartwright and Casper",
-                            Title = "Ergonomic Granite Computer Auto Loan Account JSON"
+                            Author = "Caroline Klein",
+                            Category = "quia",
+                            CoverPage = "https://picsum.photos/50/50/?image=217",
+                            Description = "Ut iusto consectetur praesentium nulla ea est beatae similique id qui consequatur voluptas doloribus ut dicta ad repudiandae dicta magni.",
+                            ISBN = 370788326,
+                            PageCount = 110,
+                            PublicationDate = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Baumbach Group",
+                            Title = "Ergonomic Fresh Bacon Prairie Checking Account"
                         },
                         new
                         {
                             ID = 73,
-                            Author = "Lillie Gusikowski",
-                            Category = "quidem",
-                            CoverPage = "https://picsum.photos/50/50/?image=14",
-                            Description = "Et ut sunt et autem repellendus rerum architecto dignissimos quos delectus id nemo fuga aut autem quisquam aperiam autem facilis.",
-                            ISBN = 913317450,
-                            PageCount = 80,
-                            PublicationDate = new DateTime(2023, 12, 30, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Nikolaus Group",
-                            Title = "Grocery, Shoes & Books relationships Liaison"
+                            Author = "Alphonso Swaniawski",
+                            Category = "et",
+                            CoverPage = "https://picsum.photos/50/50/?image=917",
+                            Description = "Quibusdam odio id id enim voluptatibus sint similique maxime laboriosam aspernatur aut molestias doloremque tenetur ea quia nisi aperiam excepturi.",
+                            ISBN = 944866514,
+                            PageCount = 269,
+                            PublicationDate = new DateTime(2024, 2, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Stracke, Mann and Okuneva",
+                            Title = "Rustic Wooden New Mexico"
                         },
                         new
                         {
                             ID = 74,
-                            Author = "Bernita Weber",
-                            Category = "voluptate",
-                            CoverPage = "https://picsum.photos/50/50/?image=265",
-                            Description = "Aut possimus laudantium ad quaerat dolorum cum id molestiae mollitia aut animi et beatae amet alias omnis repudiandae perferendis doloribus.",
-                            ISBN = 147076638,
-                            PageCount = 151,
-                            PublicationDate = new DateTime(2023, 7, 25, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Cartwright Group",
-                            Title = "Underpass human-resource Soft"
+                            Author = "Elisa Predovic",
+                            Category = "nam",
+                            CoverPage = "https://picsum.photos/50/50/?image=479",
+                            Description = "Expedita est pariatur consectetur perspiciatis eaque qui ut ducimus ad non excepturi quaerat et et distinctio odit dolor debitis recusandae.",
+                            ISBN = 762862643,
+                            PageCount = 983,
+                            PublicationDate = new DateTime(2024, 5, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Kulas Inc",
+                            Title = "payment Soft Vermont"
                         },
                         new
                         {
                             ID = 75,
-                            Author = "Weldon Sanford",
-                            Category = "aliquid",
-                            CoverPage = "https://picsum.photos/50/50/?image=934",
-                            Description = "At quibusdam porro id iure unde non voluptas rerum totam ut porro voluptas voluptates sit sit perspiciatis optio ipsam perspiciatis.",
-                            ISBN = 947251289,
-                            PageCount = 276,
-                            PublicationDate = new DateTime(2023, 8, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Dibbert Group",
-                            Title = "connect Generic Practical"
+                            Author = "Ali Harvey",
+                            Category = "laboriosam",
+                            CoverPage = "https://picsum.photos/50/50/?image=1041",
+                            Description = "Sed maxime in atque architecto consequatur ut modi laudantium et amet est harum ratione dolores doloremque enim quisquam corporis voluptas.",
+                            ISBN = 517899193,
+                            PageCount = 110,
+                            PublicationDate = new DateTime(2024, 1, 7, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Koepp Inc",
+                            Title = "Azerbaijanian Manat transparent Indiana"
                         },
                         new
                         {
                             ID = 76,
-                            Author = "Skye Torp",
-                            Category = "dicta",
-                            CoverPage = "https://picsum.photos/50/50/?image=741",
-                            Description = "Minus ad ut nulla dolor repellat minima consequatur quis dolorem quibusdam consequatur nesciunt et ut consequatur iure sed repellat nam.",
-                            ISBN = 115182493,
-                            PageCount = 225,
-                            PublicationDate = new DateTime(2023, 11, 23, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Lockman - Sanford",
-                            Title = "Cambridgeshire info-mediaries Belarus"
+                            Author = "Bianka Jacobson",
+                            Category = "neque",
+                            CoverPage = "https://picsum.photos/50/50/?image=869",
+                            Description = "Molestiae perspiciatis iste repellendus quis ea maiores tempore labore incidunt omnis ex molestiae magnam repellendus voluptate recusandae iusto sit nostrum.",
+                            ISBN = 195407307,
+                            PageCount = 770,
+                            PublicationDate = new DateTime(2023, 12, 26, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Hirthe - Rutherford",
+                            Title = "Papua New Guinea withdrawal Checking Account"
                         },
                         new
                         {
                             ID = 77,
-                            Author = "Ressie Kling",
-                            Category = "ea",
-                            CoverPage = "https://picsum.photos/50/50/?image=150",
-                            Description = "Et labore molestiae dolor doloremque odio deleniti vel voluptatem omnis maiores consequuntur est rem voluptatum et amet consequatur est deleniti.",
-                            ISBN = 842560532,
-                            PageCount = 739,
-                            PublicationDate = new DateTime(2024, 2, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "McKenzie and Sons",
-                            Title = "Buckinghamshire Outdoors, Toys & Books Vista"
+                            Author = "Alexane Rath",
+                            Category = "placeat",
+                            CoverPage = "https://picsum.photos/50/50/?image=365",
+                            Description = "Odio et iste quos iusto aut laudantium officiis hic quo id enim voluptas et consectetur cumque et fuga veritatis voluptatem.",
+                            ISBN = 573838162,
+                            PageCount = 308,
+                            PublicationDate = new DateTime(2024, 3, 27, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Murray Inc",
+                            Title = "Avon Plains white"
                         },
                         new
                         {
                             ID = 78,
-                            Author = "Lemuel Swaniawski",
-                            Category = "sed",
-                            CoverPage = "https://picsum.photos/50/50/?image=617",
-                            Description = "Dolore et cum consequatur consequatur velit aliquid accusamus aut dolore et ea soluta explicabo blanditiis ut blanditiis qui ad temporibus.",
-                            ISBN = 649289405,
-                            PageCount = 200,
-                            PublicationDate = new DateTime(2024, 6, 12, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Lebsack - Monahan",
-                            Title = "Producer calculating invoice"
+                            Author = "Mose Nikolaus",
+                            Category = "libero",
+                            CoverPage = "https://picsum.photos/50/50/?image=341",
+                            Description = "Quam molestiae non aut qui asperiores atque voluptatem voluptate at iste facere sed accusantium et enim magni consectetur id labore.",
+                            ISBN = 672058720,
+                            PageCount = 573,
+                            PublicationDate = new DateTime(2023, 12, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Mayer and Sons",
+                            Title = "orchid Unbranded interface"
                         },
                         new
                         {
                             ID = 79,
-                            Author = "Laney Grady",
-                            Category = "perferendis",
-                            CoverPage = "https://picsum.photos/50/50/?image=1052",
-                            Description = "Dicta magnam hic voluptas ipsa minus suscipit aut eaque velit aut ea laboriosam accusamus ut corporis repudiandae omnis officiis sunt.",
-                            ISBN = 831374744,
-                            PageCount = 75,
-                            PublicationDate = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Wunsch - Goldner",
-                            Title = "Gorgeous Soft Sausages calculating local"
+                            Author = "Angie Treutel",
+                            Category = "et",
+                            CoverPage = "https://picsum.photos/50/50/?image=843",
+                            Description = "Omnis aut corporis dolor velit deleniti doloremque quasi et sapiente quos ut itaque assumenda et perspiciatis est facere nihil est.",
+                            ISBN = 450664755,
+                            PageCount = 202,
+                            PublicationDate = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Erdman, Monahan and Hintz",
+                            Title = "Hollow Proactive Checking Account"
                         },
                         new
                         {
                             ID = 80,
-                            Author = "Blanche Collier",
-                            Category = "dolorem",
-                            CoverPage = "https://picsum.photos/50/50/?image=644",
-                            Description = "Vel perspiciatis nihil reiciendis eos sequi inventore reprehenderit natus voluptas labore numquam quaerat dignissimos qui quidem nisi fugiat dolorem reiciendis.",
-                            ISBN = 388064223,
-                            PageCount = 688,
-                            PublicationDate = new DateTime(2024, 4, 7, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Olson, Hilll and Torphy",
-                            Title = "North Dakota Qatari Rial out-of-the-box"
+                            Author = "Emelia Carter",
+                            Category = "aut",
+                            CoverPage = "https://picsum.photos/50/50/?image=66",
+                            Description = "Unde placeat quia quia molestias in et nam omnis qui eveniet earum odit impedit doloribus tenetur non corporis voluptas quae.",
+                            ISBN = 686149731,
+                            PageCount = 876,
+                            PublicationDate = new DateTime(2024, 4, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Larson, Boyle and McGlynn",
+                            Title = "red Metal Handcrafted"
                         },
                         new
                         {
                             ID = 81,
-                            Author = "Alexis Stroman",
-                            Category = "sit",
-                            CoverPage = "https://picsum.photos/50/50/?image=477",
-                            Description = "Qui sed molestiae mollitia qui voluptas sed ut dolorem dolor dolorem odio occaecati dolor sequi exercitationem quo est cum nihil.",
-                            ISBN = 127471384,
-                            PageCount = 201,
-                            PublicationDate = new DateTime(2023, 9, 17, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Strosin - Cummings",
-                            Title = "Handcrafted Lari Junction"
+                            Author = "Dave Weber",
+                            Category = "rerum",
+                            CoverPage = "https://picsum.photos/50/50/?image=859",
+                            Description = "Veritatis odio officiis eos dolore repellat et inventore dolores amet beatae quo magni ut natus praesentium aspernatur officiis veritatis quasi.",
+                            ISBN = 555635169,
+                            PageCount = 145,
+                            PublicationDate = new DateTime(2023, 7, 13, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Cormier and Sons",
+                            Title = "reboot protocol integrated"
                         },
                         new
                         {
                             ID = 82,
-                            Author = "Sid Stanton",
-                            Category = "sequi",
-                            CoverPage = "https://picsum.photos/50/50/?image=616",
-                            Description = "Et nemo asperiores aut illo totam tenetur ea neque qui corrupti ut esse autem minima cumque dolor quos quo est.",
-                            ISBN = 809167909,
-                            PageCount = 395,
-                            PublicationDate = new DateTime(2024, 2, 13, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "McClure - Harvey",
-                            Title = "capacitor Dynamic Drive"
+                            Author = "Shad Funk",
+                            Category = "est",
+                            CoverPage = "https://picsum.photos/50/50/?image=1024",
+                            Description = "Perspiciatis voluptatem voluptatem numquam eaque voluptas debitis autem molestiae animi occaecati iure delectus quia nihil culpa pariatur rerum in odio.",
+                            ISBN = 152713512,
+                            PageCount = 650,
+                            PublicationDate = new DateTime(2023, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Lebsack LLC",
+                            Title = "Producer fuchsia initiative"
                         },
                         new
                         {
                             ID = 83,
-                            Author = "Nelle Schamberger",
-                            Category = "nobis",
-                            CoverPage = "https://picsum.photos/50/50/?image=450",
-                            Description = "Cum saepe ducimus aut veritatis est sed quia maiores aut molestiae est et fugiat illum aperiam ea accusamus sunt pariatur.",
-                            ISBN = 899603553,
-                            PageCount = 317,
-                            PublicationDate = new DateTime(2024, 2, 13, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Harber, Pagac and Brakus",
-                            Title = "Plains Handmade Granite Car attitude"
+                            Author = "Tyrel Klocko",
+                            Category = "et",
+                            CoverPage = "https://picsum.photos/50/50/?image=960",
+                            Description = "Voluptatem a qui aut distinctio et et dolorem nihil vero dolor maxime quibusdam at cum pariatur atque et non explicabo.",
+                            ISBN = 176339474,
+                            PageCount = 962,
+                            PublicationDate = new DateTime(2023, 12, 18, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Abbott Group",
+                            Title = "Trinidad and Tobago Dollar monitor Multi-lateral"
                         },
                         new
                         {
                             ID = 84,
-                            Author = "Jillian McClure",
-                            Category = "voluptate",
-                            CoverPage = "https://picsum.photos/50/50/?image=129",
-                            Description = "Porro ab sit unde occaecati exercitationem sit ut quas ut itaque in voluptatum ab quos labore voluptatem in ab error.",
-                            ISBN = 810217803,
-                            PageCount = 179,
-                            PublicationDate = new DateTime(2023, 11, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Lebsack, Welch and Nienow",
-                            Title = "empowering Practical Fresh Chicken Steel"
+                            Author = "Thea Swift",
+                            Category = "nihil",
+                            CoverPage = "https://picsum.photos/50/50/?image=19",
+                            Description = "Cupiditate veritatis ab ab culpa facilis quia quisquam veritatis officia a recusandae reiciendis culpa magnam enim aliquam iure cupiditate dolores.",
+                            ISBN = 139178757,
+                            PageCount = 967,
+                            PublicationDate = new DateTime(2024, 1, 22, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Stamm, Roberts and Schinner",
+                            Title = "SSL Macedonia Steel"
                         },
                         new
                         {
                             ID = 85,
-                            Author = "Brady Rempel",
-                            Category = "consequuntur",
-                            CoverPage = "https://picsum.photos/50/50/?image=1045",
-                            Description = "Quasi ab quibusdam hic earum sapiente non sed est minus saepe rem dolorem repudiandae facilis illo nihil assumenda officiis unde.",
-                            ISBN = 217309177,
-                            PageCount = 83,
-                            PublicationDate = new DateTime(2024, 4, 22, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Smith, Olson and Jones",
-                            Title = "Tasty Checking Account cross-platform"
+                            Author = "Juanita Anderson",
+                            Category = "ipsa",
+                            CoverPage = "https://picsum.photos/50/50/?image=38",
+                            Description = "Corrupti officia porro et tempore aliquid ipsum facilis possimus distinctio nesciunt ea eos id labore at illo ipsam numquam aliquid.",
+                            ISBN = 458755951,
+                            PageCount = 886,
+                            PublicationDate = new DateTime(2023, 7, 18, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Hansen, Rolfson and Kling",
+                            Title = "Tasty Fresh Chips Metal Small"
                         },
                         new
                         {
                             ID = 86,
-                            Author = "Chaim Gerhold",
-                            Category = "mollitia",
-                            CoverPage = "https://picsum.photos/50/50/?image=677",
-                            Description = "Voluptatibus deleniti officia autem numquam inventore aperiam quos totam qui nulla nostrum molestiae nihil accusantium in officiis fuga sit placeat.",
-                            ISBN = 205428124,
-                            PageCount = 677,
-                            PublicationDate = new DateTime(2024, 6, 11, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Toy - Leffler",
-                            Title = "groupware ivory Legacy"
+                            Author = "Otho Gutmann",
+                            Category = "molestiae",
+                            CoverPage = "https://picsum.photos/50/50/?image=830",
+                            Description = "Veritatis dignissimos sit accusantium ullam voluptas explicabo laborum cumque commodi excepturi omnis soluta dignissimos consequuntur dignissimos exercitationem nihil voluptatum minima.",
+                            ISBN = 102324292,
+                            PageCount = 582,
+                            PublicationDate = new DateTime(2024, 5, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Runte, Hudson and Hammes",
+                            Title = "Unbranded Granite Shirt Spring Massachusetts"
                         },
                         new
                         {
                             ID = 87,
-                            Author = "Albert Jakubowski",
-                            Category = "est",
-                            CoverPage = "https://picsum.photos/50/50/?image=1037",
-                            Description = "Ex reiciendis error minima deleniti quis et culpa molestiae delectus odit quibusdam repudiandae rem et numquam labore ut delectus sequi.",
-                            ISBN = 459517336,
-                            PageCount = 503,
-                            PublicationDate = new DateTime(2024, 3, 21, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Shanahan, Schamberger and Stanton",
-                            Title = "Fresh withdrawal Idaho"
+                            Author = "Demario Powlowski",
+                            Category = "et",
+                            CoverPage = "https://picsum.photos/50/50/?image=1001",
+                            Description = "Dolore debitis facere tenetur non enim qui totam blanditiis quis consectetur tenetur vel consequatur nostrum consequatur sequi sunt sunt commodi.",
+                            ISBN = 818779701,
+                            PageCount = 771,
+                            PublicationDate = new DateTime(2024, 1, 6, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Kuvalis, Okuneva and Rippin",
+                            Title = "syndicate Metrics niches"
                         },
                         new
                         {
                             ID = 88,
-                            Author = "Florida Blanda",
-                            Category = "magnam",
-                            CoverPage = "https://picsum.photos/50/50/?image=708",
-                            Description = "Mollitia modi numquam perferendis id quam facere doloremque consequatur et eius quibusdam nisi ipsa placeat sint asperiores voluptas consequatur non.",
-                            ISBN = 840236921,
-                            PageCount = 232,
-                            PublicationDate = new DateTime(2024, 1, 9, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Simonis, Kozey and Bartoletti",
-                            Title = "action-items Pa'anga Investment Account"
+                            Author = "Myrtle Russel",
+                            Category = "autem",
+                            CoverPage = "https://picsum.photos/50/50/?image=144",
+                            Description = "Distinctio provident dolores et iure eum a quia est ut odio aperiam sed dolorum vel dolore explicabo ut illum unde.",
+                            ISBN = 779184198,
+                            PageCount = 245,
+                            PublicationDate = new DateTime(2024, 1, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Rippin LLC",
+                            Title = "Credit Card Account bi-directional orange"
                         },
                         new
                         {
                             ID = 89,
-                            Author = "Kiana Rolfson",
-                            Category = "quod",
-                            CoverPage = "https://picsum.photos/50/50/?image=881",
-                            Description = "Debitis omnis suscipit culpa accusantium reprehenderit accusantium fuga maiores et necessitatibus repudiandae quas molestiae voluptate ipsa distinctio occaecati quidem odit.",
-                            ISBN = 756818428,
-                            PageCount = 527,
-                            PublicationDate = new DateTime(2024, 2, 13, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "O'Conner and Sons",
-                            Title = "Kina Rustic Concrete Soap Licensed Metal Cheese"
+                            Author = "Zita Kozey",
+                            Category = "aliquid",
+                            CoverPage = "https://picsum.photos/50/50/?image=203",
+                            Description = "Tempore ut itaque eligendi vero dolorem facere placeat doloribus voluptate rem consequatur eum ullam quia aut praesentium itaque laudantium at.",
+                            ISBN = 278502096,
+                            PageCount = 854,
+                            PublicationDate = new DateTime(2023, 8, 15, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Stroman, Rippin and Wiza",
+                            Title = "discrete Business-focused parse"
                         },
                         new
                         {
                             ID = 90,
-                            Author = "Tatyana Goldner",
-                            Category = "modi",
-                            CoverPage = "https://picsum.photos/50/50/?image=187",
-                            Description = "Aperiam esse quibusdam quisquam enim alias id mollitia eaque quisquam quod quia et eaque id hic est eum dignissimos qui.",
-                            ISBN = 812444280,
-                            PageCount = 274,
-                            PublicationDate = new DateTime(2023, 9, 10, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Feest and Sons",
-                            Title = "Frozen Pitcairn Islands Egypt"
+                            Author = "Lura Gerlach",
+                            Category = "eos",
+                            CoverPage = "https://picsum.photos/50/50/?image=483",
+                            Description = "Ut asperiores consequatur excepturi ipsam earum non modi excepturi eius tempore possimus quibusdam sit nulla voluptas molestiae veritatis debitis dolores.",
+                            ISBN = 598067277,
+                            PageCount = 779,
+                            PublicationDate = new DateTime(2023, 10, 13, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Willms and Sons",
+                            Title = "Dynamic RAM compressing"
                         },
                         new
                         {
                             ID = 91,
-                            Author = "Dalton Wunsch",
-                            Category = "dolore",
-                            CoverPage = "https://picsum.photos/50/50/?image=851",
-                            Description = "Deleniti eveniet rerum asperiores voluptatem omnis beatae amet sint ducimus numquam qui molestiae natus temporibus laudantium unde quibusdam temporibus fugiat.",
-                            ISBN = 214772525,
-                            PageCount = 354,
-                            PublicationDate = new DateTime(2023, 12, 22, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Mills Group",
-                            Title = "Colombia PCI Berkshire"
+                            Author = "Nia Kozey",
+                            Category = "temporibus",
+                            CoverPage = "https://picsum.photos/50/50/?image=392",
+                            Description = "Laudantium et iure ut reprehenderit laudantium ipsa et iste ipsum voluptatem est ea quaerat sint explicabo et dolores sed labore.",
+                            ISBN = 835488125,
+                            PageCount = 717,
+                            PublicationDate = new DateTime(2023, 8, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Jacobi Group",
+                            Title = "initiatives Integration online"
                         },
                         new
                         {
                             ID = 92,
-                            Author = "Herminia Padberg",
-                            Category = "facilis",
-                            CoverPage = "https://picsum.photos/50/50/?image=740",
-                            Description = "In sit aut aut est ut dolore fuga ut quia est corporis mollitia inventore et laudantium hic mollitia aut debitis.",
-                            ISBN = 678472836,
-                            PageCount = 942,
-                            PublicationDate = new DateTime(2023, 7, 9, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Mraz - Fisher",
-                            Title = "mindshare North Korean Won Division"
+                            Author = "Abby Stokes",
+                            Category = "sapiente",
+                            CoverPage = "https://picsum.photos/50/50/?image=392",
+                            Description = "Ea totam quidem fugit recusandae nihil dicta voluptatem architecto voluptatem dolorem doloremque numquam ut sed at et non repudiandae magnam.",
+                            ISBN = 796318293,
+                            PageCount = 990,
+                            PublicationDate = new DateTime(2023, 7, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Sawayn - Zemlak",
+                            Title = "Berkshire Specialist recontextualize"
                         },
                         new
                         {
                             ID = 93,
-                            Author = "Marc Wuckert",
-                            Category = "beatae",
-                            CoverPage = "https://picsum.photos/50/50/?image=427",
-                            Description = "Et ea facilis ad laboriosam at nam reiciendis qui voluptates quis omnis quam molestiae eaque laudantium eveniet vitae veritatis quam.",
-                            ISBN = 232774762,
-                            PageCount = 594,
-                            PublicationDate = new DateTime(2024, 3, 6, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Buckridge, Kshlerin and Mohr",
-                            Title = "Granite Developer leverage"
+                            Author = "Green Mayert",
+                            Category = "magni",
+                            CoverPage = "https://picsum.photos/50/50/?image=799",
+                            Description = "Aspernatur sint excepturi alias dignissimos culpa aut nobis consectetur provident qui alias facere et voluptatum dolor nobis hic est possimus.",
+                            ISBN = 442512604,
+                            PageCount = 317,
+                            PublicationDate = new DateTime(2024, 4, 17, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Paucek, Nolan and Swift",
+                            Title = "Music, Garden & Jewelery intangible Vietnam"
                         },
                         new
                         {
                             ID = 94,
-                            Author = "Leopoldo Cummerata",
-                            Category = "ut",
-                            CoverPage = "https://picsum.photos/50/50/?image=368",
-                            Description = "Eos quia autem voluptatem quia aliquam distinctio exercitationem debitis sunt mollitia mollitia doloribus consequatur exercitationem vel molestiae consequatur ut ipsa.",
-                            ISBN = 872517718,
-                            PageCount = 322,
-                            PublicationDate = new DateTime(2024, 1, 26, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Keebler - Rempel",
-                            Title = "Generic Rubber Hat drive client-server"
+                            Author = "Jade Orn",
+                            Category = "enim",
+                            CoverPage = "https://picsum.photos/50/50/?image=811",
+                            Description = "Ut maxime officia quisquam perferendis esse autem vel ut harum tempore porro impedit tempore dolor repudiandae qui aliquam officia et.",
+                            ISBN = 216682696,
+                            PageCount = 236,
+                            PublicationDate = new DateTime(2023, 9, 13, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Douglas Group",
+                            Title = "Intelligent Tools Fantastic"
                         },
                         new
                         {
                             ID = 95,
-                            Author = "Willard Miller",
-                            Category = "velit",
-                            CoverPage = "https://picsum.photos/50/50/?image=684",
-                            Description = "Dolorem aut facilis facere aliquam nihil harum unde aut eum et qui maxime voluptate consequatur enim nesciunt aut voluptatum sint.",
-                            ISBN = 139290563,
-                            PageCount = 475,
-                            PublicationDate = new DateTime(2023, 9, 27, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Willms - Bernier",
-                            Title = "Savings Account Practical Metal Gloves tan"
+                            Author = "Darrick Yost",
+                            Category = "inventore",
+                            CoverPage = "https://picsum.photos/50/50/?image=903",
+                            Description = "Et quibusdam temporibus optio numquam eligendi quia itaque veniam consectetur eius iure tempora ullam consectetur ratione recusandae dolorum omnis quasi.",
+                            ISBN = 401437612,
+                            PageCount = 89,
+                            PublicationDate = new DateTime(2023, 7, 14, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Strosin, Bednar and Hodkiewicz",
+                            Title = "deposit Handcrafted Metal Tuna River"
                         },
                         new
                         {
                             ID = 96,
-                            Author = "Vaughn Reynolds",
-                            Category = "officiis",
-                            CoverPage = "https://picsum.photos/50/50/?image=27",
-                            Description = "Rerum sint suscipit iure porro nulla sequi cum alias eum dolore numquam rerum explicabo at laboriosam aliquid veritatis ducimus error.",
-                            ISBN = 557816635,
-                            PageCount = 545,
-                            PublicationDate = new DateTime(2023, 11, 16, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Walsh - Ferry",
-                            Title = "GB bus instruction set"
+                            Author = "Zachary Leannon",
+                            Category = "et",
+                            CoverPage = "https://picsum.photos/50/50/?image=766",
+                            Description = "Nam earum incidunt ullam quia consequuntur tempore non distinctio quisquam similique maiores cumque beatae nesciunt aperiam fuga nesciunt vero eos.",
+                            ISBN = 119132240,
+                            PageCount = 181,
+                            PublicationDate = new DateTime(2023, 8, 20, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Wehner - Brekke",
+                            Title = "turquoise AGP instruction set"
                         },
                         new
                         {
                             ID = 97,
-                            Author = "Gerardo Kovacek",
-                            Category = "ut",
-                            CoverPage = "https://picsum.photos/50/50/?image=634",
-                            Description = "Cumque facilis consequatur quo quaerat voluptas quibusdam mollitia eaque officia voluptatem delectus ducimus aliquid rem minus eum rem autem eligendi.",
-                            ISBN = 665327116,
-                            PageCount = 742,
-                            PublicationDate = new DateTime(2023, 9, 20, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Torphy, Kutch and Kozey",
-                            Title = "schemas Frozen olive"
+                            Author = "Kian Gerlach",
+                            Category = "cumque",
+                            CoverPage = "https://picsum.photos/50/50/?image=281",
+                            Description = "Numquam nihil ut est et sint voluptates reiciendis minus iure in suscipit suscipit soluta dolor corporis laboriosam nihil consequatur eaque.",
+                            ISBN = 345284071,
+                            PageCount = 228,
+                            PublicationDate = new DateTime(2024, 2, 18, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Hegmann, Welch and Russel",
+                            Title = "withdrawal Money Market Account Bridge"
                         },
                         new
                         {
                             ID = 98,
-                            Author = "Geovanni Koch",
-                            Category = "et",
-                            CoverPage = "https://picsum.photos/50/50/?image=706",
-                            Description = "Molestiae quisquam quos sint dolorem molestiae eos dolor velit nobis dolores autem doloremque et totam laudantium repellat labore inventore iste.",
-                            ISBN = 251259249,
-                            PageCount = 791,
-                            PublicationDate = new DateTime(2024, 5, 27, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Kunze, Dickens and Blanda",
-                            Title = "bypassing dedicated Handcrafted"
+                            Author = "Spencer Homenick",
+                            Category = "ipsum",
+                            CoverPage = "https://picsum.photos/50/50/?image=296",
+                            Description = "Eaque et consequatur non optio mollitia fugiat minima atque commodi omnis facilis occaecati rem eum soluta aut tempora sunt nihil.",
+                            ISBN = 919596258,
+                            PageCount = 673,
+                            PublicationDate = new DateTime(2023, 7, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Botsford, Schuster and Price",
+                            Title = "TCP port Handmade"
                         },
                         new
                         {
                             ID = 99,
-                            Author = "Elinor Zulauf",
-                            Category = "expedita",
-                            CoverPage = "https://picsum.photos/50/50/?image=1063",
-                            Description = "Mollitia adipisci culpa rem dolor reprehenderit deserunt debitis laboriosam facere id quia sint ipsam rerum id quidem maiores molestias qui.",
-                            ISBN = 876033747,
-                            PageCount = 795,
-                            PublicationDate = new DateTime(2024, 4, 29, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Yost - King",
-                            Title = "reciprocal structure Kansas"
+                            Author = "Margarita Shields",
+                            Category = "repudiandae",
+                            CoverPage = "https://picsum.photos/50/50/?image=760",
+                            Description = "Aut nihil assumenda voluptas qui inventore velit eum animi inventore et sed voluptatem fuga facere nam voluptas qui aspernatur ducimus.",
+                            ISBN = 203211016,
+                            PageCount = 473,
+                            PublicationDate = new DateTime(2023, 11, 26, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Schumm, Tremblay and Kuphal",
+                            Title = "Investment Account visionary quantify"
                         },
                         new
                         {
                             ID = 100,
-                            Author = "Darrick Hauck",
-                            Category = "natus",
-                            CoverPage = "https://picsum.photos/50/50/?image=26",
-                            Description = "Et nam voluptatem qui repellendus nobis aut quia laboriosam ratione voluptas aut et sed tempora enim nihil autem quia animi.",
-                            ISBN = 837330246,
-                            PageCount = 450,
-                            PublicationDate = new DateTime(2024, 5, 18, 0, 0, 0, 0, DateTimeKind.Local),
-                            Publisher = "Wehner, McGlynn and Towne",
-                            Title = "turn-key Human Beauty & Computers"
+                            Author = "Travon Torp",
+                            Category = "sunt",
+                            CoverPage = "https://picsum.photos/50/50/?image=798",
+                            Description = "Repellendus laboriosam deleniti modi qui id aut commodi cumque pariatur non et molestiae doloribus adipisci officia et rem hic ut.",
+                            ISBN = 575079929,
+                            PageCount = 604,
+                            PublicationDate = new DateTime(2024, 3, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            Publisher = "Legros - McClure",
+                            Title = "Unbranded Granite Mouse Credit Card Account optimize"
                         });
                 });
 
-            modelBuilder.Entity("TechnicalAssessmentRokov.Entities.UserAccount", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("ID");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<string>("Password")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("PASSWORD");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<string>("Role")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("ROLE");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("UserName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("USER_NAME");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.HasKey("ID");
-
-                    b.ToTable("UserAccounts");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

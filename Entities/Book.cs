@@ -6,7 +6,6 @@ namespace TechnicalAssessmentRokov.Entities
 {
     public class Book
     {
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ID")]
@@ -31,7 +30,12 @@ namespace TechnicalAssessmentRokov.Entities
         public string? Category { get; set; }
         [Column("PAGE_COUNT")]
         public int PageCount { get; set; }
-
+        [Column("CHECKED_OUT_DATE")]
+        public DateTime? CheckedOutDate { get; set; }
+        [Column("DUE_DATE")]
+        public DateTime? DueDate { get; set; }
+        [Column("CHECKED_OUT_BY")]
+        public int? CheckedOutById { get; set; }
     }
     
 }
