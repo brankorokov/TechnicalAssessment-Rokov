@@ -1,4 +1,10 @@
-﻿# App Setup
+﻿## About the app
+You are able to sign up as either a librarian or a customer. Librarians on the home page can add books, or click on book titles to update. If the book is checked out, the librarian can check in.
+Librarians are also notified when a book they are viewing is past due.
+
+Customers can check out books.
+
+# App Setup
 
 Before running the app, please make sure you have the following prerequisites installed:
 
