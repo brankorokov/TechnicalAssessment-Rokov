@@ -1,4 +1,5 @@
 ﻿@inject ILibraryService _homeService
+@inject ISnackbar Snackbar
 <MudDialog>
     <DialogContent>
         <MudPaper Elevation="0" Class="p-4">
@@ -87,7 +88,7 @@
     private async Task DeleteBook()
     {
         await _homeService.DeleteBook(_book);
-        MudDialog.Close(DialogResult.Ok(true));
+        MudDialog.Close(DialogResult.Ok("DELETED"));
     }
 
     private void UpdateBook()
@@ -98,13 +99,13 @@
     private async Task ConfirmUpdate()
     {
         await _homeService.UpdateBook(_book);
-        MudDialog.Close(DialogResult.Ok(true));
+        MudDialog.Close(DialogResult.Ok("UPDATED"));
     }
 
     private async Task CheckIn()
     {
         await _homeService.CheckInBook(_book);
-        MudDialog.Close(DialogResult.Ok(true));
+        MudDialog.Close(DialogResult.Ok("CHECKIN"));
     }
 
     private void CancelUpdate()

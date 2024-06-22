@@ -6,7 +6,7 @@
 @layout AccountLayout
 @inject SignInManager<IdentityUser> SignInManager
 @inject ILogger<Login> Logger
-@inject NavigationManager NavigationManager
+@inject NavigationManager _navigationManager
 @inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Log in</PageTitle>
@@ -17,7 +17,7 @@
             <section>
                 <h1>Log in</h1>
                 <hr />
-                <StatusMessage Message="@errorMessage" />
+                <StatusMessage Message="@errorMessage"/>
                 <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                     <DataAnnotationsValidator />
                     <ValidationSummary class="text-danger" role="alert" />
@@ -77,16 +77,20 @@
             if (result.Succeeded)
             {
                 Logger.LogInformation("User logged in.");
-                NavigationManager.NavigateTo("/");
+                _navigationManager.NavigateTo("/");
             }
             else
             {
                 errorMessage = "Error: Invalid login attempt.";
             }
         }
-        catch
+        catch(NavigationException)
         {
-            errorMessage = "Error: Invalid login attempt.";
+            _navigationManager.NavigateTo("/");
+        }
+        catch(Exception ex)
+        {
+            errorMessage = ex.Message;
         }
     }
 

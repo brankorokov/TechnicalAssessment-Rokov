@@ -3,6 +3,7 @@
 @inject NavigationManager navManager
 @inject ILibraryService homeService
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @attribute [Authorize]
 @layout Layout.MainLayout
 
@@ -19,7 +20,7 @@
                 </Authorized>
             </AuthorizeView>
             <MudSpacer />
-            <MudSelect Label="Search By: " T="string" @bind-Value="searchBy" Style="width: 50px">
+            <MudSelect Label="Search By: " T="string" @bind-Value="searchBy">
                 <MudSelectItem Value="@("Title")">Title</MudSelectItem>
                 <MudSelectItem Value="@("Publisher")">Publisher</MudSelectItem>
                 <MudSelectItem Value="@("Category")">Category</MudSelectItem>
@@ -27,6 +28,7 @@
                 <MudSelectItem Value="@("ISBN")">ISBN</MudSelectItem>
             </MudSelect>
             <MudTextField @bind-Value="bookSearchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
         </ToolBarContent>
         <HeaderContent>
             <HeaderFooterContent />
@@ -117,6 +119,19 @@
 
         if (!result.Cancelled)
         {
+            if(result.Data.ToString() == "DELETED")
+            {
+                Snackbar.Add("Book deleted successfully", Severity.Info);
+            }
+            else if(result.Data.ToString() == "UPDATED")
+            {
+                Snackbar.Add("Book updated successfully", Severity.Success);
+            }
+            else if (result.Data.ToString() == "CHECKIN")
+            {
+                Snackbar.Add("Book checked in successfully", Severity.Success);
+            }
+
             await GetBooks();
         }
     }
@@ -124,12 +139,13 @@
     //Opens the add book dialog to add a new book.
     private async Task OpenAddBookDialog()
     {
-        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = false, CloseButton=true, DisableBackdropClick=true};
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = false, CloseButton = true, DisableBackdropClick = true };
         var dialog = await DialogService.ShowAsync<AddBookDialog>(null, options);
         var result = await dialog.Result;
 
         if (!result.Cancelled)
         {
+            Snackbar.Add("Book added successfully", Severity.Success);
             await GetBooks();
         }
     }
