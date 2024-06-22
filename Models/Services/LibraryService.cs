@@ -15,8 +15,14 @@ using static System.Net.WebRequestMethods;
 
 namespace TechnicalAssessmentRokov.Models.Services
 {
+    /**
+     * - Every method in this service is just a simple call to the API where the data will be manipulated.
+     * - Since this is a blazor server application, this step is not neccesary, we can just call the data context from this service to change the data. 
+     *   But we have an API so we'll use that.
+     *    **/
     public class LibraryService : ILibraryService
     {
+        //DI
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _contextAccessor;
@@ -28,6 +34,7 @@ namespace TechnicalAssessmentRokov.Models.Services
             _configuration = configuration;
             _contextAccessor = contextAccessor;
 
+            //Set the baseUri to the current request scheme and host. This will be used to call the API
             baseUri = $"{_contextAccessor.HttpContext?.Request.Scheme}://{_contextAccessor.HttpContext?.Request.Host}";
         }
 
@@ -196,6 +203,7 @@ namespace TechnicalAssessmentRokov.Models.Services
             }
         }
 
+        //Creates an httpClient with the Identity Cookie token so that API can authenticate the user roles
         private HttpClient CreateHttpClient()
         {
             HttpClient httpClient = _httpClientFactory.CreateClient();

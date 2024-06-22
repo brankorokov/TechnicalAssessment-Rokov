@@ -9,6 +9,7 @@
 <MudContainer MaxWidth="MaxWidth.ExtraLarge">
     <MudTable Height="700px" FixedHeader="true" FixedFooter="true" Items="@bookList" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Filter="new Func<Book,bool>(FilterBooks)">
         <ToolBarContent>
+            @* Renders the toolbar for librarian *@
             <AuthorizeView Roles="LIBRARIAN">
                 <Authorized>
                     <MudButton Color="Color.Success" ButtonType="ButtonType.Button" OnClick="OpenAddBookDialog" Variant="Variant.Filled">
@@ -42,6 +43,7 @@
             <MudTd DataLabel="ISBN">@context.ISBN</MudTd>
             <AuthorizeView Roles="CUSTOMER">
                 <Authorized Context="auth">
+                    @* Flow to display check out info for customer *@
                     @if (context.CheckedOutByUserId != null && context.CheckedOutByUserId == auth.User.FindFirstValue(ClaimTypes.NameIdentifier))
                     {
                         <MudTd>
@@ -105,6 +107,7 @@
         };
     }
 
+    //Opens the book dialog to display info about the book.
     private async Task OpenBookDialog(Book book)
     {
         var parameters = new DialogParameters<BookDialog> { { x => x._book, book } };
@@ -118,6 +121,7 @@
         }
     }
 
+    //Opens the add book dialog to add a new book.
     private async Task OpenAddBookDialog()
     {
         var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = false, CloseButton=true, DisableBackdropClick=true};
@@ -130,6 +134,7 @@
         }
     }
 
+    //Checkout the book for the customer.
     private async Task Checkout(Book book)
     {
         await homeService.CheckoutBook(book);

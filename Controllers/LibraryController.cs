@@ -8,6 +8,10 @@ using TechnicalAssessmentRokov.Entities;
 
 namespace TechnicalAssessmentRokov.Controllers
 {
+    /** 
+     * - This is the API controller which will access our dataContext and make changes to the data.
+     * - We authorize based on a policy that we've set up in the Program.cs file. This just checks if the user is registered as a customer or librarian. i.e they have an account.
+     **/
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "LibraryMember")]
@@ -40,6 +44,7 @@ namespace TechnicalAssessmentRokov.Controllers
         }
 
         [HttpPost("deletebook")]
+        [Authorize(Roles = "LIBRARIAN")]
         public async Task<IActionResult> DeleteBook(Book book)
         {
 
