@@ -1,21 +1,79 @@
-﻿
-@inject IHomeService _homeService
+﻿@inject IHomeService _homeService
 <MudDialog>
     <DialogContent>
         <MudPaper Elevation="0" Class="p-4">
             <h2>Book Details:</h2>
-            <MudDivider Class="mb-4"/>
-            <div class="row">
-                @foreach (var property in typeof(Book).GetProperties().Where(x => x.Name != "ID" && x.Name != "CheckedOutBy" && x.Name != "CoverPage"))
-                {
-                    <div class="col-md-6 mb-3">
-                        <MudText Typo=Typo.h6>@property.Name</MudText>
-                        <MudText Typo=Typo.subtitle1>@property.GetValue(_book)</MudText>
-                    </div>
-                }
-            </div>
             <MudDivider Class="mb-4" />
-            <MudButton @onclick="DeleteBook" Variant="Variant.Filled" Color="Color.Error">Delete Records</MudButton>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Title" @bind-Value="_book.Title" Disabled="@(!isUpdating)" Placeholder="Untitled" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Author" @bind-Value="_book.Author" Disabled="@(!isUpdating)" Placeholder="Unknown" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Description" @bind-Value="_book.Description" Disabled="@(!isUpdating)" Placeholder="No Description Found" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Publisher" @bind-Value="_book.Publisher" Disabled="@(!isUpdating)" Placeholder="Unknown" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker Label="Publication Date" @bind-Date="_book.PublicationDate" Disabled="@(!isUpdating)" Placeholder="Unknown" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Category" @bind-Value="_book.Category" Disabled="@(!isUpdating)" Placeholder="N/A" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Page Count" @bind-Value="_book.PageCount" Disabled="@(!isUpdating)" Placeholder="N/A" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="ISBN" @bind-Value="_book.ISBN" Disabled="@(!isUpdating)" Placeholder="N/A" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker Mask="@(new DateMask("MM/dd/yyyy"))" DateFormat="MM/dd/yyyy" Label="Checked Out Date" @bind-Date="_book.CheckedOutDate" Disabled="@(!isUpdating)" Placeholder="@(_book.CheckedOutDate.ToString() ?? "N/A")" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudDatePicker Mask="@(new DateMask("MM/dd/yyyy"))" DateFormat="MM/dd/yyyy" Label="Due Date" @bind-Date="_book.DueDate" Disabled="@(!isUpdating)" Placeholder="@(_book.DueDate.ToString() ?? "N/A")" />
+                </MudItem>
+                <AuthorizeView Roles="LIBRARIAN">
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.h6">Checked out By: </MudText>
+                        <MudText Typo="Typo.body1">@(_book.CheckedOutByUser?.UserName ?? "N/A")</MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        @if (_book.DueDate < DateTime.Today)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Error">Book is overdue</MudText>
+                        }
+                    </MudItem>
+                </AuthorizeView>
+            </MudGrid>
+            <MudDivider Class="mb-4" />
+            <AuthorizeView Roles="LIBRARIAN">
+                <Authorized>
+                    <MudButton @onclick="DeleteBook" Variant="Variant.Filled" Color="Color.Error">Delete Book</MudButton>
+                    <MudButton @onclick="UpdateBook" Variant="Variant.Filled" Color="Color.Dark">Update Book</MudButton>
+                    @if (isUpdating)
+                    {
+                        <MudButton @onclick="ConfirmUpdate" Class="ml-1" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success">
+                            Confirm Update
+                            <MudIcon Class="ml-1" Icon="@Icons.Material.Filled.Check"></MudIcon>
+                        </MudButton>
+                        <MudButton @onclick="CancelUpdate">
+                            Cancel
+                            <MudIcon Class="ml-1" Icon="@Icons.Material.Filled.Cancel"></MudIcon>
+                        </MudButton>
+                    }
+
+                    @if (_book.CheckedOutByUserId != null)
+                    {
+                        <MudButton @onclick="CheckIn">
+                            Check In Book
+                            <MudIcon Icon="@Icons.Material.Filled.Download"></MudIcon>
+                        </MudButton>
+                    }
+                </Authorized>
+            </AuthorizeView>
         </MudPaper>
     </DialogContent>
 </MudDialog>
@@ -25,10 +83,32 @@
 
     [Parameter]
     public Book _book { get; set; } = new Book();
-
+    private bool isUpdating = false;
     private async Task DeleteBook()
     {
-        await _homeService.DeleteBook(_book.ID);
+        await _homeService.DeleteBook(_book);
         MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void UpdateBook()
+    {
+        isUpdating = true;
+    }
+
+    private async Task ConfirmUpdate()
+    {
+        await _homeService.UpdateBook(_book);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task CheckIn()
+    {
+        await _homeService.CheckInBook(_book);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void CancelUpdate()
+    {
+        isUpdating = false;
     }
 }

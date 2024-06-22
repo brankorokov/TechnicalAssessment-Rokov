@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TechnicalAssessmentRokov.Entities
 {
@@ -25,6 +25,7 @@ namespace TechnicalAssessmentRokov.Entities
         [Column("PUBLISHER")]
         public string? Publisher { get; set; }
         [Column("PUBLICATION_DATE")]
+        [DisplayFormat(DataFormatString = "MM/dd/yyyy")]
         public DateTime? PublicationDate { get; set; }
         [Column("CATEGORY")]
         public string? Category { get; set; }
@@ -34,8 +35,9 @@ namespace TechnicalAssessmentRokov.Entities
         public DateTime? CheckedOutDate { get; set; }
         [Column("DUE_DATE")]
         public DateTime? DueDate { get; set; }
-        [Column("CHECKED_OUT_BY")]
-        public int? CheckedOutById { get; set; }
+        [ForeignKey("CheckedOutByUser")]
+        public string? CheckedOutByUserId { get; set; }
+        public virtual IdentityUser? CheckedOutByUser { get; set; }
     }
     
 }

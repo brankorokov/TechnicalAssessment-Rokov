@@ -13,6 +13,7 @@ using TechnicalAssessmentRokov.Models;
 using TechnicalAssessmentRokov.Components.Account;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Net.Sockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,12 @@ builder.Services.AddAuthentication(options =>
 })
 .AddIdentityCookies();
 
+builder.Services.AddAuthorizationCore(options =>
+{
+    options.AddPolicy("LibraryMember", policy =>
+        policy.RequireRole("CUSTOMER", "LIBRARIAN"));
+});
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<DataContext>(options =>
@@ -55,7 +62,9 @@ builder.Services.AddIdentityCore<IdentityUser>(options =>
 
 
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddHttpClient();
+
 builder.Services.AddRazorComponents();
 builder.Services.AddSwaggerGen();
 
@@ -88,6 +97,6 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.MapAdditionalIdentityEndpoints(); ;
+app.MapAdditionalIdentityEndpoints();
 
 app.Run();

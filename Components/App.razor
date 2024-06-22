@@ -22,6 +22,7 @@
 @code {
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
-
-    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account") ? null : InteractiveServer;
+    //Was having an issue both with interactive server on the auth pages. When we access an account view we mark it as static.
+    //Disabling prerendering fixes a bug where the OnInitializedAsync was being called twice.
+    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account") ? null : new InteractiveServerRenderMode(prerender: false);
 }

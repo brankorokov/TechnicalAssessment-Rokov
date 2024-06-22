@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
-@rendermode InteractiveServer
 @inject NavigationManager navManager
 @inject IHomeService homeService
 @inject IDialogService DialogService
@@ -10,7 +9,22 @@
 <MudContainer MaxWidth="MaxWidth.ExtraLarge">
     <MudTable Items="@bookList" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Filter="new Func<Book,bool>(FilterBooks)" Bordered="true">
         <ToolBarContent>
+            <AuthorizeView Roles="LIBRARIAN">
+                <Authorized>
+                    <MudButton Color="Color.Success" ButtonType="ButtonType.Button" OnClick="OpenAddBookDialog" Variant="Variant.Filled">
+                        Add Book
+                        <MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon>
+                    </MudButton>
+                </Authorized>
+            </AuthorizeView>
             <MudSpacer />
+            <MudSelect Label="Search By: " T="string" @bind-Value="searchBy" Style="width: 50px">
+                <MudSelectItem Value="@("Title")">Title</MudSelectItem>
+                <MudSelectItem Value="@("Publisher")">Publisher</MudSelectItem>
+                <MudSelectItem Value="@("Category")">Category</MudSelectItem>
+                <MudSelectItem Value="@("Author")">Author</MudSelectItem>
+                <MudSelectItem Value="@("ISBN")">ISBN</MudSelectItem>
+            </MudSelect>
             <MudTextField @bind-Value="bookSearchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
@@ -23,35 +37,39 @@
             <MudTh>Category</MudTh>
             <MudTh Class="text-nowrap">Page Count</MudTh>
             <MudTh>ISBN</MudTh>
-            <MudTh Class="text-nowrap">Checked Out</MudTh>
-            <MudTh>Due By</MudTh>
-            <MudTh Class="text-nowrap">Checked Out By</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="CoverPage"><MudImage Src="@context.CoverPage" /></MudTd>
-            <MudTd DataLabel="Title">
-                <AuthorizeView>
-                    <Authorized Context="authContext">
-
-                        <MudLink OnClick="@(() => OpenBookModal(context))">@context.Title</MudLink>
-                    </Authorized>
-                    <NotAuthorized Context="authContext">
-                        <div>
-                            <!-- Not authorized content here -->
-                        </div>
-                    </NotAuthorized>
-                </AuthorizeView>
-            </MudTd>
+            <MudTd DataLabel="Title"><MudLink OnClick="@(() => OpenBookDialog(context))">@context.Title</MudLink></MudTd>
             <MudTd DataLabel="Author" Class="text-nowrap">@context.Author</MudTd>
             <MudTd DataLabel="Description">@context.Description</MudTd>
             <MudTd DataLabel="Publisher">@context.Publisher</MudTd>
-            <MudTd DataLabel="PublicationDate">@Convert.ToDateTime(context.PublicationDate).ToString("MM/dd/yyyy")</MudTd>
+            <MudTd DataLabel="PublicationDate">@(context.PublicationDate is null ? "Unknown" : Convert.ToDateTime(context.PublicationDate).ToString("MM/dd/yyyy"))</MudTd>
             <MudTd DataLabel="Category">@context.Category</MudTd>
             <MudTd DataLabel="PageCount">@context.PageCount</MudTd>
             <MudTd DataLabel="ISBN">@context.ISBN</MudTd>
-            <MudTd DataLabel="CheckedOutDate">@Convert.ToDateTime(context.CheckedOutDate).ToString("MM/dd/yyyy")</MudTd>
-            <MudTd DataLabel="DueDate">@Convert.ToDateTime(context.DueDate).ToString("MM/dd/yyyy")</MudTd>
-            <MudTd DataLabel="CheckedOutBy">@context.CheckedOutById</MudTd>
+            <AuthorizeView Roles="CUSTOMER">
+                <Authorized Context="auth">
+                    @if (context.CheckedOutByUserId != null && context.CheckedOutByUserId == auth.User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        <MudTd>
+                            <MudButton Variant="Variant.Filled" Disabled>Return By @context.DueDate</MudButton>
+                        </MudTd>
+                    }
+                    else if (context.CheckedOutByUserId != null @* context.CheckedOutByUserId != auth.User.Identity *@)
+                    {
+                        <MudTd>
+                            <MudButton Variant="Variant.Filled" Disabled>Checked Out</MudButton>
+                        </MudTd>
+                    }
+                    else
+                    {
+                        <MudTd>
+                            <MudButton Variant="Variant.Filled" OnClick="() => Checkout(context)">Check Out<MudIcon Icon="@Icons.Material.Filled.ArrowRight"></MudIcon></MudButton>
+                        </MudTd>
+                    }
+                </Authorized>
+            </AuthorizeView>
         </RowTemplate>
     </MudTable>
 </MudContainer>
@@ -59,6 +77,7 @@
 @code {
     private List<Book>? bookList;
     private string bookSearchString = "";
+    public string searchBy = "Title";
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,16 +96,21 @@
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
 
-        if (book.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return false;
+        return searchBy switch
+        {
+            "Title" => book.Title?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true,
+            "Publisher" => book.Publisher?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true,
+            "Category" => book.Category?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true,
+            "Author" => book.Author?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true,
+            "ISBN" => book.ISBN.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase),
+            _ => true
+        };
     }
 
-    private async Task OpenBookModal(Book book)
+    private async Task OpenBookDialog(Book book)
     {
         var parameters = new DialogParameters<BookDialog> { { x => x._book, book } };
-        var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true, NoHeader = true};
+        var options = new DialogOptions { MaxWidth = MaxWidth.Large, FullWidth = true, NoHeader = true };
         var dialog = await DialogService.ShowAsync<BookDialog>(null, parameters, options);
         var result = await dialog.Result;
 
@@ -94,5 +118,23 @@
         {
             await GetBooks();
         }
-    }   
+    }
+
+    private async Task OpenAddBookDialog()
+    {
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true };
+        var dialog = await DialogService.ShowAsync<AddBookDialog>(null, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await GetBooks();
+        }
+    }
+
+    private async Task Checkout(Book book)
+    {
+        await homeService.CheckoutBook(book);
+        await GetBooks();
+    }
 }

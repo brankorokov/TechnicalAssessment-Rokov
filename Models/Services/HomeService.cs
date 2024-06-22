@@ -1,24 +1,30 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security;
 using System.Security.Claims;
 using System.Text;
 using TechnicalAssessmentRokov.Entities;
 using TechnicalAssessmentRokov.Models.Interfaces;
+using static System.Net.WebRequestMethods;
 
 namespace TechnicalAssessmentRokov.Models.Services
 {
     public class HomeService : IHomeService
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly string baseUri;
 
-        public HomeService(HttpClient httpClient, IConfiguration configuration, IHttpContextAccessor contextAccessor)
+        public HomeService(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor contextAccessor)
         {
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
             _configuration = configuration;
             _contextAccessor = contextAccessor;
 
@@ -31,7 +37,8 @@ namespace TechnicalAssessmentRokov.Models.Services
 
             try
             {
-                var response = await _httpClient.GetAsync(requestUri);
+                HttpClient httpClient = CreateHttpClient();
+                var response = await httpClient.GetAsync(requestUri);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -53,40 +60,148 @@ namespace TechnicalAssessmentRokov.Models.Services
             }
         }
 
-        public async Task DeleteBook(int bookId)
+        public async Task DeleteBook(Book book)
         {
             string requestUri = $"{baseUri}/api/home/deletebook";
 
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
-
-                var userRoles = _contextAccessor.HttpContext.User.Claims
-                    .Where(c => c.Type == ClaimTypes.Role)
-                    .Select(c => c.Value)
-                    .ToList();
-
-                if (userRoles.Any())
-                {
-                    request.Headers.Add("X-User-Roles", string.Join(",", userRoles));
-                }
-
-                var requestBody = new { ID = bookId };
-                var json = JsonConvert.SerializeObject(requestBody);
+                HttpClient httpClient = CreateHttpClient();
+                var json = JsonConvert.SerializeObject(book);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                request.Content = content;
 
-                var response = await _httpClient.SendAsync(request);
+                var response = await httpClient.PostAsync(requestUri, content);
 
                 if (response.IsSuccessStatusCode)
                 {
                     return;
+                }
+                else
+                {
+                    throw new HttpRequestException($"Failed to delete book. Status code: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException("Failed to delete book.", ex);
             }
+        }
+
+        public async Task AddBook(Book book)
+        {
+            string requestUri = $"{baseUri}/api/home/addbook";
+
+            try
+            {
+                HttpClient httpClient = CreateHttpClient();
+                var json = JsonConvert.SerializeObject(book);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await httpClient.PostAsync(requestUri, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+                else
+                {
+                    throw new HttpRequestException($"Failed to add book. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to add book.", ex);
+            }
+        }
+
+        public async Task UpdateBook(Book book)
+        {
+            string requestUri = $"{baseUri}/api/home/updatebook";
+
+            try
+            {
+                HttpClient httpClient = CreateHttpClient();
+                var json = JsonConvert.SerializeObject(book);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await httpClient.PostAsync(requestUri, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+                else
+                {
+                    throw new HttpRequestException($"Failed to update book. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to update book.", ex);
+            }
+        }
+
+        public async Task CheckoutBook(Book book)
+        {
+            string requestUri = $"{baseUri}/api/home/checkoutbook";
+            try
+            {
+                HttpClient httpClient = CreateHttpClient();
+
+                var json = JsonConvert.SerializeObject(book);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await httpClient.PostAsync(requestUri, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+                else
+                {
+                    throw new HttpRequestException($"Failed to checkout book. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to checkout book.", ex);
+            }
+        }
+
+        public async Task CheckInBook(Book book)
+        {
+            string requestUri = $"{baseUri}/api/home/checkinbook";
+
+            try
+            {
+                HttpClient httpClient = CreateHttpClient();
+
+                var json = JsonConvert.SerializeObject(book);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await httpClient.PostAsync(requestUri, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+                else
+                {
+                    throw new HttpRequestException($"Failed to check in book. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to check in book.", ex);
+            }
+        }
+
+        private HttpClient CreateHttpClient()
+        {
+            HttpClient httpClient = _httpClientFactory.CreateClient();
+            var token = _contextAccessor.HttpContext?.Request.Cookies[".AspNetCore.Identity.Application"];
+            httpClient.DefaultRequestHeaders.Add("Cookie", $".AspNetCore.Identity.Application={token}");
+            return httpClient;
         }
     }
 }

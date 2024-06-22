@@ -1,0 +1,35 @@
+﻿@inject IHomeService _homeService
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Elevation="0" Class="p-4">
+            <h2>Add Book</h2>
+            <MudForm>
+                <MudTextField @bind-Value="_book.Title" Label="Title" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="_book.Author" Label="Author" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="_book.Category" Label="Genre" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="_book.ISBN" Label="ISBN" Variant="Variant.Outlined" />
+                <MudDatePicker @bind-Date="_book.PublicationDate" Label="Published Date" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="_book.Publisher" Label="Publisher" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="_book.PageCount" Label="Page Count" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="_book.Description" Label="Description" Variant="Variant.Outlined" Lines="3" />
+                <MudButton @onclick="AddBook" Variant="Variant.Filled" Color="Color.Primary" Class="mt-3">Add Book</MudButton>
+            </MudForm>
+        </MudPaper>
+    </DialogContent>
+</MudDialog>
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = new();
+
+    Book _book = new();
+
+    private bool uploading = false;
+    private async Task AddBook()
+    {
+        await _homeService.AddBook(_book);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+
+}

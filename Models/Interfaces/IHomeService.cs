@@ -1,10 +1,15 @@
-﻿using TechnicalAssessmentRokov.Entities;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using TechnicalAssessmentRokov.Entities;
 
 namespace TechnicalAssessmentRokov.Models.Interfaces
 {
     public interface IHomeService
     {
         public Task<List<Book>?> GetBooks();
-        public Task DeleteBook(int bookId);
+        public Task DeleteBook(Book book);
+        public Task AddBook(Book book);
+        public Task UpdateBook(Book book);
+        public Task CheckoutBook(Book book);
+        public Task CheckInBook(Book book);
     }
 }
