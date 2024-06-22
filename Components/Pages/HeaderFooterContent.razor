@@ -1,0 +1,21 @@
+﻿<MudTh></MudTh>
+<MudTh>
+    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Book, object>(x => x.Title)">Title</MudTableSortLabel>
+</MudTh>
+<MudTh>
+    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Book, object>(x => x.Author ?? String.Empty)">Author</MudTableSortLabel>
+</MudTh>
+<MudTh>
+    Description
+</MudTh>
+<MudTh>
+    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Book, object>(x => x.Publisher ?? String.Empty)">Published By</MudTableSortLabel>
+</MudTh>
+<MudTh Class="text-nowrap">Published Date</MudTh>
+<MudTh>
+    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Book, object>(x => x.PageCount)">Category</MudTableSortLabel>
+</MudTh>
+<MudTh Class="text-nowrap">Page Count</MudTh>
+<MudTh>
+    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Book, object>(x => x.ISBN)">Category</MudTableSortLabel>
+</MudTh>

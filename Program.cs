@@ -68,7 +68,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddRazorComponents();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IHomeService, HomeService>();
+builder.Services.AddSingleton<ILibraryService, LibraryService>();
 
 builder.Services.AddControllers();
 

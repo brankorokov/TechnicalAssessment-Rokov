@@ -11,11 +11,11 @@ namespace TechnicalAssessmentRokov.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "LibraryMember")]
-    public class HomeController : Controller
+    public class LibraryController : Controller
     {
         private readonly DataContext _dataContext;
         private readonly IHttpContextAccessor _contextAccessor;
-        public HomeController(DataContext dataContext, IHttpContextAccessor contextAccessor)
+        public LibraryController(DataContext dataContext, IHttpContextAccessor contextAccessor)
         {
             _dataContext = dataContext;
             _contextAccessor = contextAccessor;

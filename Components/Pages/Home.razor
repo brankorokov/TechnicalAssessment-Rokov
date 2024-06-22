@@ -1,13 +1,13 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager navManager
-@inject IHomeService homeService
+@inject ILibraryService homeService
 @inject IDialogService DialogService
 @attribute [Authorize]
 @layout Layout.MainLayout
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    <MudTable Items="@bookList" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Filter="new Func<Book,bool>(FilterBooks)" Bordered="true">
+    <MudTable Height="700px" FixedHeader="true" FixedFooter="true" Items="@bookList" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Filter="new Func<Book,bool>(FilterBooks)">
         <ToolBarContent>
             <AuthorizeView Roles="LIBRARIAN">
                 <Authorized>
@@ -28,15 +28,7 @@
             <MudTextField @bind-Value="bookSearchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh></MudTh>
-            <MudTh>Title</MudTh>
-            <MudTh>Author</MudTh>
-            <MudTh>Description</MudTh>
-            <MudTh>Published</MudTh>
-            <MudTh Class="text-nowrap">Published Date</MudTh>
-            <MudTh>Category</MudTh>
-            <MudTh Class="text-nowrap">Page Count</MudTh>
-            <MudTh>ISBN</MudTh>
+            <HeaderFooterContent />
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="CoverPage"><MudImage Src="@context.CoverPage" /></MudTd>
@@ -56,10 +48,10 @@
                             <MudButton Variant="Variant.Filled" Disabled>Return By @context.DueDate</MudButton>
                         </MudTd>
                     }
-                    else if (context.CheckedOutByUserId != null @* context.CheckedOutByUserId != auth.User.Identity *@)
+                    else if (context.CheckedOutByUserId != null && context.CheckedOutByUserId != auth.User.FindFirstValue(ClaimTypes.NameIdentifier))
                     {
                         <MudTd>
-                            <MudButton Variant="Variant.Filled" Disabled>Checked Out</MudButton>
+                            <MudButton Variant="Variant.Filled" Disabled>Unavailable</MudButton>
                         </MudTd>
                     }
                     else
@@ -71,6 +63,12 @@
                 </Authorized>
             </AuthorizeView>
         </RowTemplate>
+        <FooterContent>
+            <HeaderFooterContent />
+        </FooterContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
     </MudTable>
 </MudContainer>
 
@@ -122,7 +120,7 @@
 
     private async Task OpenAddBookDialog()
     {
-        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = false, CloseButton=true, DisableBackdropClick=true};
         var dialog = await DialogService.ShowAsync<AddBookDialog>(null, options);
         var result = await dialog.Result;
 

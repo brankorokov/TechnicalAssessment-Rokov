@@ -3,7 +3,7 @@ using TechnicalAssessmentRokov.Entities;
 
 namespace TechnicalAssessmentRokov.Models.Interfaces
 {
-    public interface IHomeService
+    public interface ILibraryService
     {
         public Task<List<Book>?> GetBooks();
         public Task DeleteBook(Book book);

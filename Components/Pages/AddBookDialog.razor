@@ -1,35 +1,51 @@
-﻿@inject IHomeService _homeService
+﻿@inject ILibraryService _homeService
+@using TechnicalAssessmentRokov.Models.ViewModels
 
 <MudDialog>
     <DialogContent>
         <MudPaper Elevation="0" Class="p-4">
             <h2>Add Book</h2>
-            <MudForm>
-                <MudTextField @bind-Value="_book.Title" Label="Title" Variant="Variant.Outlined" />
-                <MudTextField @bind-Value="_book.Author" Label="Author" Variant="Variant.Outlined" />
-                <MudTextField @bind-Value="_book.Category" Label="Genre" Variant="Variant.Outlined" />
-                <MudTextField @bind-Value="_book.ISBN" Label="ISBN" Variant="Variant.Outlined" />
-                <MudDatePicker @bind-Date="_book.PublicationDate" Label="Published Date" Variant="Variant.Outlined" />
-                <MudTextField @bind-Value="_book.Publisher" Label="Publisher" Variant="Variant.Outlined" />
-                <MudTextField @bind-Value="_book.PageCount" Label="Page Count" Variant="Variant.Outlined" />
-                <MudTextField @bind-Value="_book.Description" Label="Description" Variant="Variant.Outlined" Lines="3" />
-                <MudButton @onclick="AddBook" Variant="Variant.Filled" Color="Color.Primary" Class="mt-3">Add Book</MudButton>
+            <MudForm @ref="form" @bind-IsValid="@success">
+                <MudTextField @bind-Value="model.Title" Required="true" RequiredError="Title is required." Label="Title" Variant="Variant.Outlined" Placeholder="Unknown" />
+                <MudTextField @bind-Value="model.Author" Required="true" RequiredError="Author is required." Label="Author" Variant="Variant.Outlined" Placeholder="Unknown/Anonymous" />
+                <MudTextField @bind-Value="model.Category" Label="Genre" Variant="Variant.Outlined" Placeholder="Unknown" />
+                <MudTextField @bind-Value="model.ISBN" Required="true" RequiredError="ISBN is required." Label="ISBN" Variant="Variant.Outlined" />
+                <MudDatePicker @bind-Date="model.PublicationDate" Label="Published Date" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="model.Publisher" Label="Publisher" Variant="Variant.Outlined" Placeholder="Unknown" />
+                <MudTextField @bind-Value="model.PageCount" Required="true" RequiredError="Page Count is required." Label="Page Count" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="model.Description" Immediate="true" Clearable="true" Adornment="Adornment.End" Label="Description" Variant="Variant.Outlined" Lines="3" Placeholder="No Description Available" />
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="mt-3" OnClick="Submit">Add Book</MudButton>
             </MudForm>
         </MudPaper>
     </DialogContent>
 </MudDialog>
+
 @code {
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = new();
+    MudForm form = new();
+    bool success;
+    AddBookViewModel model = new();
 
-    Book _book = new();
-
-    private bool uploading = false;
-    private async Task AddBook()
+    private async Task Submit()
     {
-        await _homeService.AddBook(_book);
-        MudDialog.Close(DialogResult.Ok(true));
+        await form.Validate();
+        if (form.IsValid)
+        {
+            Book _book = new Book
+                {
+                    Title = model.Title ?? "Unknown",
+                    Author = model.Author ?? "Unknown/Anonymous",
+                    Category = model.Category ?? "Unknown",
+                    ISBN = model.ISBN ?? 0,
+                    PublicationDate = model.PublicationDate,
+                    Publisher = model.Publisher ?? "Unknown",
+                    PageCount = model.PageCount ?? 0,
+                    Description = model.Description ?? "No Description Available"
+                };
+
+            await _homeService.AddBook(_book);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
     }
-
-
 }

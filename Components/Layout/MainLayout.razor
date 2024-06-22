@@ -2,7 +2,7 @@
 @using MudBlazor
 @inject NavigationManager navManager
 
-<MudThemeProvider />
+<MudThemeProvider Theme="@MyCustomTheme" />
 <MudDialogProvider />
 <MudLayout>
     <AuthorizeView>
@@ -29,4 +29,25 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = "#2E5E4E",
+                Secondary = "#93A7AA",
+                AppbarBackground = "#2E5E4E",
+                Success = "#66BB6A",
+                Error = "#FF7043",
+                //Define other properties here.
+            },
+
+            PaletteDark = new PaletteDark()
+            {
+                Primary = Colors.Blue.Darken4,
+                Secondary = Colors.Green.Accent4,
+                AppbarBackground = Colors.Red.Default,
+                //Define other properties here.
+            }
+        };
 }

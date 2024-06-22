@@ -15,14 +15,14 @@ using static System.Net.WebRequestMethods;
 
 namespace TechnicalAssessmentRokov.Models.Services
 {
-    public class HomeService : IHomeService
+    public class LibraryService : ILibraryService
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly string baseUri;
 
-        public HomeService(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor contextAccessor)
+        public LibraryService(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor contextAccessor)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
@@ -33,7 +33,7 @@ namespace TechnicalAssessmentRokov.Models.Services
 
         public async Task<List<Book>?> GetBooks()
         {
-            string requestUri = $"{baseUri}/api/home/getbooks";
+            string requestUri = $"{baseUri}/api/library/getbooks";
 
             try
             {
@@ -62,7 +62,7 @@ namespace TechnicalAssessmentRokov.Models.Services
 
         public async Task DeleteBook(Book book)
         {
-            string requestUri = $"{baseUri}/api/home/deletebook";
+            string requestUri = $"{baseUri}/api/library/deletebook";
 
             try
             {
@@ -89,7 +89,7 @@ namespace TechnicalAssessmentRokov.Models.Services
 
         public async Task AddBook(Book book)
         {
-            string requestUri = $"{baseUri}/api/home/addbook";
+            string requestUri = $"{baseUri}/api/library/addbook";
 
             try
             {
@@ -116,7 +116,7 @@ namespace TechnicalAssessmentRokov.Models.Services
 
         public async Task UpdateBook(Book book)
         {
-            string requestUri = $"{baseUri}/api/home/updatebook";
+            string requestUri = $"{baseUri}/api/library/updatebook";
 
             try
             {
@@ -143,7 +143,7 @@ namespace TechnicalAssessmentRokov.Models.Services
 
         public async Task CheckoutBook(Book book)
         {
-            string requestUri = $"{baseUri}/api/home/checkoutbook";
+            string requestUri = $"{baseUri}/api/library/checkoutbook";
             try
             {
                 HttpClient httpClient = CreateHttpClient();
@@ -170,7 +170,7 @@ namespace TechnicalAssessmentRokov.Models.Services
 
         public async Task CheckInBook(Book book)
         {
-            string requestUri = $"{baseUri}/api/home/checkinbook";
+            string requestUri = $"{baseUri}/api/library/checkinbook";
 
             try
             {
